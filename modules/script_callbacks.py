@@ -2,7 +2,7 @@ import sys
 import traceback
 from collections import namedtuple
 import inspect
-from typing import Optional, Dict, Any
+from typing import Optional, Any
 
 from fastapi import FastAPI
 from gradio import Blocks
@@ -210,7 +210,7 @@ def image_grid_callback(params: ImageGridLoopParams):
             report_exception(c, 'image_grid')
 
 
-def infotext_pasted_callback(infotext: str, params: Dict[str, Any]):
+def infotext_pasted_callback(infotext: str, params: dict[str, Any]):
     for c in callback_map['callbacks_infotext_pasted']:
         try:
             c.callback(infotext, params)

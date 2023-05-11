@@ -35,7 +35,7 @@ def find_noise_for_image(p, cond, uncond, cfg_scale, steps):
         image_conditioning = torch.cat([p.image_conditioning] * 2)
         cond_in = {"c_concat": [image_conditioning], "c_crossattn": [cond_in]}
 
-        c_out, c_in = [K.utils.append_dims(k, x_in.ndim) for k in dnw.get_scalings(sigma_in)[skip:]]
+        c_out, c_in = (K.utils.append_dims(k, x_in.ndim) for k in dnw.get_scalings(sigma_in)[skip:])
         t = dnw.sigma_to_t(sigma_in)
 
         eps = shared.sd_model.apply_model(x_in * c_in, t, cond=cond_in)
@@ -87,7 +87,7 @@ def find_noise_for_image_sigma_adjustment(p, cond, uncond, cfg_scale, steps):
         image_conditioning = torch.cat([p.image_conditioning] * 2)
         cond_in = {"c_concat": [image_conditioning], "c_crossattn": [cond_in]}
 
-        c_out, c_in = [K.utils.append_dims(k, x_in.ndim) for k in dnw.get_scalings(sigma_in)[skip:]]
+        c_out, c_in = (K.utils.append_dims(k, x_in.ndim) for k in dnw.get_scalings(sigma_in)[skip:])
 
         if i == 1:
             t = dnw.sigma_to_t(torch.cat([sigmas[i] * s_in] * 2))

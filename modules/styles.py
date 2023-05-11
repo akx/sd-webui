@@ -42,7 +42,7 @@ class StyleDatabase:
         if not os.path.exists(self.path):
             return
 
-        with open(self.path, "r", encoding="utf-8-sig", newline='') as file:
+        with open(self.path, encoding="utf-8-sig", newline='') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 # Support loading old CSV format with "name, text"-columns

@@ -484,7 +484,7 @@ class Options:
             self.data[key] = value
             return
 
-        return super(Options, self).__setattr__(key, value)
+        return super().__setattr__(key, value)
 
     def __getattr__(self, item):
         if self.data is not None and item in self.data:
@@ -493,7 +493,7 @@ class Options:
         if item in self.data_labels:
             return self.data_labels[item].default
 
-        return super(Options, self).__getattribute__(item)
+        return super().__getattribute__(item)
 
     def set(self, key, value):
         """sets an option and calls its onchange callback, returning True if the option changed and False otherwise"""
@@ -542,7 +542,7 @@ class Options:
         return type_x == type_y
 
     def load(self, filename):
-        with open(filename, "r", encoding="utf8") as file:
+        with open(filename, encoding="utf8") as file:
             self.data = json.load(file)
 
         # 1.1.1 quicksettings list migration

@@ -174,7 +174,7 @@ def preprocess_work(process_src, process_dst, process_width, process_height, pre
         existing_caption = None
         existing_caption_filename = f"{os.path.splitext(filename)[0]}.txt"
         if os.path.exists(existing_caption_filename):
-            with open(existing_caption_filename, 'r', encoding="utf8") as file:
+            with open(existing_caption_filename, encoding="utf8") as file:
                 existing_caption = file.read()
 
         if shared.state.interrupted:

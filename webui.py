@@ -159,7 +159,7 @@ def initialize():
 
     if os.path.isfile(config_state_file):
         print(f"*** About to restore extension state from file: {config_state_file}")
-        with open(config_state_file, "r", encoding="utf-8") as f:
+        with open(config_state_file, encoding="utf-8") as f:
             config_state = json.load(f)
             config_states.restore_extension_config(config_state)
         startup_timer.record("restore extension config")
@@ -302,7 +302,7 @@ def webui():
         if cmd_opts.gradio_auth:
             gradio_auth_creds += [x.strip() for x in cmd_opts.gradio_auth.strip('"').replace('\n', '').split(',') if x.strip()]
         if cmd_opts.gradio_auth_path:
-            with open(cmd_opts.gradio_auth_path, 'r', encoding="utf8") as file:
+            with open(cmd_opts.gradio_auth_path, encoding="utf8") as file:
                 for line in file.readlines():
                     gradio_auth_creds += [x.strip() for x in line.split(',') if x.strip()]
 
@@ -376,7 +376,7 @@ def webui():
 
         if os.path.isfile(config_state_file):
             print(f"*** About to restore extension state from file: {config_state_file}")
-            with open(config_state_file, "r", encoding="utf-8") as f:
+            with open(config_state_file, encoding="utf-8") as f:
                 config_state = json.load(f)
                 config_states.restore_extension_config(config_state)
             startup_timer.record("restore extension config")

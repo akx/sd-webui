@@ -118,7 +118,7 @@ def run(command, desc=None, errdesc=None, custom_env=None, live: bool = default_
 
 
 def check_run(command):
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    result = subprocess.run(command, capture_output=True, shell=True)
     return result.returncode == 0
 
 
@@ -218,7 +218,7 @@ def list_extensions(settings_file):
 
     try:
         if os.path.isfile(settings_file):
-            with open(settings_file, "r", encoding="utf8") as file:
+            with open(settings_file, encoding="utf8") as file:
                 settings = json.load(file)
     except Exception as e:
         print(e, file=sys.stderr)

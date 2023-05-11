@@ -6,9 +6,10 @@ extend-select = [
 	"B",
 	"C",
 	"I",
-	"SIM",
-	"W",
 	"PLC",
+	"SIM",
+	"UP",
+	"W",
 ]
 
 exclude = [

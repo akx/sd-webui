@@ -9,7 +9,7 @@ sd_vae_approx_model = None
 
 class VAEApprox(nn.Module):
     def __init__(self):
-        super(VAEApprox, self).__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(4, 8, (7, 7))
         self.conv2 = nn.Conv2d(8, 16, (5, 5))
         self.conv3 = nn.Conv2d(16, 32, (3, 3))

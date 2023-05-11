@@ -707,7 +707,7 @@ class LatentDiffusion(DDPM):
 
         null_prompt = self.get_learned_conditioning([""])
         cond["c_crossattn"] = [torch.where(prompt_mask, null_prompt, self.get_learned_conditioning(xc["c_crossattn"]).detach())]
-        cond["c_concat"] = [input_mask * self.encode_first_stage((xc["c_concat"].to(self.device))).mode().detach()]
+        cond["c_concat"] = [input_mask * self.encode_first_stage(xc["c_concat"].to(self.device)).mode().detach()]
 
         out = [z, cond]
         if return_first_stage_outputs:

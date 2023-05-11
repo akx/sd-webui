@@ -111,7 +111,7 @@ class UiLoadsave:
             self.add_component(f"{path}/{x.label}", x)
 
     def read_from_file(self):
-        with open(self.filename, "r", encoding="utf8") as file:
+        with open(self.filename, encoding="utf8") as file:
             return json.load(file)
 
     def write_to_file(self, current_ui_settings):

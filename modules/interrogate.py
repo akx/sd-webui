@@ -74,7 +74,7 @@ class InterrogateModels:
                     continue
                 m = re_topn.search(filename.stem)
                 topn = 1 if m is None else int(m.group(1))
-                with open(filename, "r", encoding="utf8") as file:
+                with open(filename, encoding="utf8") as file:
                     lines = [x.strip() for x in file.readlines()]
 
                 self.loaded_categories.append(Category(name=filename.stem, topn=topn, items=lines))

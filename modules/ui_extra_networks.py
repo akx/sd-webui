@@ -212,7 +212,7 @@ class ExtraNetworksPage:
         """
         for file in [f"{path}.txt", f"{path}.description.txt"]:
             try:
-                with open(file, "r", encoding="utf-8", errors="replace") as f:
+                with open(file, encoding="utf-8", errors="replace") as f:
                     return f.read()
             except OSError:
                 pass

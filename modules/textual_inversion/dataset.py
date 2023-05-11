@@ -40,7 +40,7 @@ class PersonalizedBase(Dataset):
 
         self.dataset = []
 
-        with open(template_file, "r") as file:
+        with open(template_file) as file:
             lines = [x.strip() for x in file.readlines()]
 
         self.lines = lines
@@ -76,7 +76,7 @@ class PersonalizedBase(Dataset):
             filename = os.path.basename(path)
 
             if os.path.exists(text_filename):
-                with open(text_filename, "r", encoding="utf8") as file:
+                with open(text_filename, encoding="utf8") as file:
                     filename_text = file.read()
             else:
                 filename_text = os.path.splitext(filename)[0]
@@ -209,7 +209,7 @@ class GroupedBatchSampler(Sampler):
 
 class PersonalizedDataLoader(DataLoader):
     def __init__(self, dataset, latent_sampling_method="once", batch_size=1, pin_memory=False):
-        super(PersonalizedDataLoader, self).__init__(dataset, batch_sampler=GroupedBatchSampler(dataset, batch_size), pin_memory=pin_memory)
+        super().__init__(dataset, batch_sampler=GroupedBatchSampler(dataset, batch_size), pin_memory=pin_memory)
         if latent_sampling_method == "random":
             self.collate_fn = collate_wrapper_random
         else:

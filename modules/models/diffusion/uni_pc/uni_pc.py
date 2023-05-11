@@ -127,7 +127,7 @@ class NoiseScheduleVP:
         Compute log(alpha_t) of a given continuous-time label t in [0, T].
         """
         if self.schedule == 'discrete':
-            return interpolate_fn(t.reshape((-1, 1)), self.t_array.to(t.device), self.log_alpha_array.to(t.device)).reshape((-1))
+            return interpolate_fn(t.reshape((-1, 1)), self.t_array.to(t.device), self.log_alpha_array.to(t.device)).reshape(-1)
         elif self.schedule == 'linear':
             return -0.25 * t ** 2 * (self.beta_1 - self.beta_0) - 0.5 * t * self.beta_0
         elif self.schedule == 'cosine':
@@ -291,7 +291,7 @@ def model_wrapper(
 
     def noise_pred_fn(x, t_continuous, cond=None):
         if t_continuous.reshape((-1,)).shape[0] == 1:
-            t_continuous = t_continuous.expand((x.shape[0]))
+            t_continuous = t_continuous.expand(x.shape[0])
         t_input = get_model_input_time(t_continuous)
         if cond is None:
             output = model(x, t_input, None, **model_kwargs)
@@ -326,7 +326,7 @@ def model_wrapper(
         The noise predicition model function that is used for DPM-Solver.
         """
         if t_continuous.reshape((-1,)).shape[0] == 1:
-            t_continuous = t_continuous.expand((x.shape[0]))
+            t_continuous = t_continuous.expand(x.shape[0])
         if guidance_type == "uncond":
             return noise_pred_fn(x, t_continuous)
         elif guidance_type == "classifier":
@@ -756,7 +756,7 @@ class UniPC:
             #print(f"Running UniPC Sampling with {timesteps.shape[0]} timesteps, order {order}")
             assert timesteps.shape[0] - 1 == steps
             with torch.no_grad():
-                vec_t = timesteps[0].expand((x.shape[0]))
+                vec_t = timesteps[0].expand(x.shape[0])
                 model_prev_list = [self.model_fn(x, vec_t)]
                 t_prev_list = [vec_t]
                 with tqdm.tqdm(total=steps) as pbar:

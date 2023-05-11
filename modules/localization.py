@@ -28,7 +28,7 @@ def localization_js(current_localization_name):
     data = {}
     if fn is not None:
         try:
-            with open(fn, "r", encoding="utf8") as file:
+            with open(fn, encoding="utf8") as file:
                 data = json.load(file)
         except Exception:
             print(f"Error loading localization from {fn}:", file=sys.stderr)

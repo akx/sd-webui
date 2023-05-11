@@ -30,7 +30,7 @@ def list_config_states():
     for filename in os.listdir(config_states_dir):
         if filename.endswith(".json"):
             path = os.path.join(config_states_dir, filename)
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 j = json.load(f)
                 j["filepath"] = path
                 config_states.append(j)

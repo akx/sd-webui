@@ -443,7 +443,7 @@ class RSTB(nn.Module):
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
                  drop_path=0., norm_layer=nn.LayerNorm, downsample=None, use_checkpoint=False,
                  img_size=224, patch_size=4, resi_connection='1conv'):
-        super(RSTB, self).__init__()
+        super().__init__()
 
         self.dim = dim
         self.input_resolution = input_resolution
@@ -588,7 +588,7 @@ class Upsample(nn.Sequential):
             m.append(nn.PixelShuffle(3))
         else:
             raise ValueError(f'scale {scale} is not supported. ' 'Supported scales: 2^n and 3.')
-        super(Upsample, self).__init__(*m)
+        super().__init__(*m)
 
 
 class UpsampleOneStep(nn.Sequential):
@@ -607,7 +607,7 @@ class UpsampleOneStep(nn.Sequential):
         m = []
         m.append(nn.Conv2d(num_feat, (scale ** 2) * num_out_ch, 3, 1, 1))
         m.append(nn.PixelShuffle(scale))
-        super(UpsampleOneStep, self).__init__(*m)
+        super().__init__(*m)
 
     def flops(self):
         H, W = self.input_resolution
@@ -650,7 +650,7 @@ class SwinIR(nn.Module):
                  norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                  use_checkpoint=False, upscale=2, img_range=1., upsampler='', resi_connection='1conv',
                  **kwargs):
-        super(SwinIR, self).__init__()
+        super().__init__()
         num_in_ch = in_chans
         num_out_ch = in_chans
         num_feat = 64

@@ -6,7 +6,7 @@ from .uni_pc import NoiseScheduleVP, model_wrapper, UniPC
 from modules import shared, devices
 
 
-class UniPCSampler(object):
+class UniPCSampler:
     def __init__(self, model, **kwargs):
         super().__init__()
         self.model = model

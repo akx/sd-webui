@@ -438,10 +438,10 @@ def stack_conds(conds):
 
 def statistics(data):
     std = 0 if len(data) < 2 else stdev(data)
-    total_information = f"loss:{mean(data):.3f}" + u"\u00B1" + f"({std/ (len(data) ** 0.5):.3f})"
+    total_information = f"loss:{mean(data):.3f}" + "\u00B1" + f"({std/ (len(data) ** 0.5):.3f})"
     recent_data = data[-32:]
     std = 0 if len(recent_data) < 2 else stdev(recent_data)
-    recent_information = f"recent 32 loss:{mean(recent_data):.3f}" + u"\u00B1" + f"({std / (len(recent_data) ** 0.5):.3f})"
+    recent_information = f"recent 32 loss:{mean(recent_data):.3f}" + "\u00B1" + f"({std / (len(recent_data) ** 0.5):.3f})"
     return total_information, recent_information
 
 
