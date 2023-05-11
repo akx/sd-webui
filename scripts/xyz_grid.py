@@ -549,7 +549,10 @@ class Script(scripts.Script):
 
         def fix_axis_seeds(axis_opt, axis_list):
             if axis_opt.label in ['Seed', 'Var. seed']:
-                return [int(random.randrange(4294967294)) if val is None or val == '' or val == -1 else val for val in axis_list]
+                return [
+                    int(random.randrange(4294967294)) if (val is None or val == '' or val == -1) else val  # noqa: PLC1901
+                    for val in axis_list
+                ]
             else:
                 return axis_list
 

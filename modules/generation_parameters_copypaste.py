@@ -254,9 +254,9 @@ Steps: 20, Sampler: Euler a, CFG scale: 7, Seed: 965400086, Size: 512x512, Model
             line = line[16:].strip()
 
         if done_with_prompt:
-            negative_prompt += ("" if negative_prompt == "" else "\n") + line
+            negative_prompt += ("\n" if negative_prompt else "") + line
         else:
-            prompt += ("" if prompt == "" else "\n") + line
+            prompt += ("\n" if prompt else "") + line
 
     res["Prompt"] = prompt
     res["Negative prompt"] = negative_prompt

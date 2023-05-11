@@ -39,7 +39,7 @@ def save_pil_to_file(pil_image, dir=None):
         file_obj = Savedfile(f'{already_saved_as}?{os.path.getmtime(already_saved_as)}')
         return file_obj
 
-    if shared.opts.temp_dir != "":
+    if shared.opts.temp_dir:
         dir = shared.opts.temp_dir
 
     use_metadata = False
@@ -59,7 +59,7 @@ gr.processing_utils.save_pil_to_file = save_pil_to_file
 
 
 def on_tmpdir_changed():
-    if shared.opts.temp_dir == "" or shared.demo is None:
+    if not shared.opts.temp_dir or shared.demo is None:
         return
 
     os.makedirs(shared.opts.temp_dir, exist_ok=True)
@@ -69,7 +69,7 @@ def on_tmpdir_changed():
 
 def cleanup_tmpdr():
     temp_dir = shared.opts.temp_dir
-    if temp_dir == "" or not os.path.isdir(temp_dir):
+    if not (temp_dir and os.path.isdir(temp_dir)):
         return
 
     for root, _, files in os.walk(temp_dir, topdown=False):

@@ -111,8 +111,8 @@ class ExtraNetworksPage:
             subdirs = {"": 1, **subdirs}
 
         subdirs_html = "".join([f"""
-<button class='lg secondary gradio-button custom-button{" search-all" if subdir=="" else ""}' onclick='extraNetworksSearchButton("{tabname}_extra_tabs", event)'>
-{html.escape(subdir if subdir!="" else "all")}
+<button class='lg secondary gradio-button custom-button{" search-all" if not subdir else ""}' onclick='extraNetworksSearchButton("{tabname}_extra_tabs", event)'>
+{html.escape(subdir or "all")}
 </button>
 """ for subdir in subdirs])
 
@@ -123,7 +123,7 @@ class ExtraNetworksPage:
 
             items_html += self.create_html_for_item(item, tabname)
 
-        if items_html == '':
+        if not items_html:
             dirs = "".join([f"<li>{x}</li>" for x in self.allowed_directories_for_previews()])
             items_html = shared.html("extra-networks-no-cards.html").format(dirs=dirs)
 

@@ -27,7 +27,7 @@ def process_batch(p, input_dir, output_dir, inpaint_mask_dir, args):
 
     print(f"Will process {len(images)} images, creating {p.n_iter * p.batch_size} new images for each.")
 
-    save_normally = output_dir == ''
+    save_normally = bool(not output_dir)
 
     p.do_not_save_grid = True
     p.do_not_save_samples = not save_normally

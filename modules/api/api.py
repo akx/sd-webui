@@ -221,7 +221,7 @@ class Api:
         raise HTTPException(status_code=401, detail="Incorrect username or password", headers={"WWW-Authenticate": "Basic"})
 
     def get_selectable_script(self, script_name, script_runner):
-        if script_name is None or script_name == "":
+        if not script_name:
             return None, None
 
         script_idx = script_name_to_index(script_name, script_runner.selectable_scripts)
@@ -235,7 +235,7 @@ class Api:
         return models.ScriptsList(txt2img=t2ilist, img2img=i2ilist)
 
     def get_script(self, script_name, script_runner):
-        if script_name is None or script_name == "":
+        if not script_name:
             return None, None
 
         script_idx = script_name_to_index(script_name, script_runner.scripts)

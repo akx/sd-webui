@@ -44,7 +44,7 @@ def run_postprocessing(extras_mode, image, image_folder, input_dir, output_dir, 
         image_data.append(image)
         image_names.append(None)
 
-    if extras_mode == 2 and output_dir != '':
+    if extras_mode == 2 and output_dir:
         outpath = output_dir
     else:
         outpath = opts.outdir_samples or opts.outdir_extras_samples

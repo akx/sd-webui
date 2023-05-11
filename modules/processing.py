@@ -446,7 +446,7 @@ def decode_first_stage(model, x):
 
 
 def get_fixed_seed(seed):
-    if seed is None or seed == '' or seed == -1:
+    if seed is None or seed == '' or seed == -1:  # noqa: PLC1901
         return int(random.randrange(4294967294))
 
     return seed

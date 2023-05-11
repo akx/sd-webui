@@ -374,14 +374,14 @@ class FilenameGenerator:
             return None
         outres = ""
         for arg in args:
-            if arg != "":
+            if arg:
                 division = arg.split("|")
                 expected = division[0].lower()
                 default = division[1] if len(division) > 1 else ""
                 if lower.find(expected) >= 0:
                     outres = f'{outres}{expected}'
                 else:
-                    outres = outres if default == "" else f'{outres}{default}'
+                    outres = f'{outres}{default}'
         return sanitize_filename_part(outres)
 
     def prompt_no_style(self):
@@ -407,7 +407,7 @@ class FilenameGenerator:
     def datetime(self, *args):
         time_datetime = datetime.datetime.now()
 
-        time_format = args[0] if len(args) > 0 and args[0] != "" else self.default_time_format
+        time_format = args[0] if (args and args[0]) else self.default_time_format
         try:
             time_zone = pytz.timezone(args[1]) if len(args) > 1 else None
         except pytz.exceptions.UnknownTimeZoneError:
@@ -467,7 +467,7 @@ def get_next_sequence_number(path, basename):
     The sequence starts at 0.
     """
     result = -1
-    if basename != '':
+    if basename:
         basename = f"{basename}-"
 
     prefix_length = len(basename)
@@ -534,9 +534,9 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
         else:
             file_decoration = opts.samples_filename_pattern or "[seed]-[prompt_spaces]"
 
-        add_number = opts.save_images_add_number or file_decoration == ''
+        add_number = bool(opts.save_images_add_number or not file_decoration)
 
-        if file_decoration != "" and add_number:
+        if file_decoration and add_number:
             file_decoration = f"-{file_decoration}"
 
         file_decoration = namegen.apply(file_decoration) + suffix
@@ -545,7 +545,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
             basecount = get_next_sequence_number(path, basename)
             fullfn = None
             for i in range(500):
-                fn = f"{basecount + i:05}" if basename == '' else f"{basename}-{basecount + i:04}"
+                fn = f"{basecount + i:05}" if not basename else f"{basename}-{basecount + i:04}"
                 fullfn = os.path.join(path, f"{fn}{file_decoration}.{extension}")
                 if not os.path.exists(fullfn):
                     break

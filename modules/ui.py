@@ -140,7 +140,7 @@ def process_interrogate(interrogation_function, mode, ii_input_dir, ii_output_di
         assert not shared.cmd_opts.hide_ui_dir_config, "Launched with --hide-ui-dir-config, batch img2img disabled"
         images = shared.listfiles(ii_input_dir)
         print(f"Will process {len(images)} images.")
-        if ii_output_dir != "":
+        if ii_output_dir:
             os.makedirs(ii_output_dir, exist_ok=True)
         else:
             ii_output_dir = ii_input_dir
@@ -230,7 +230,7 @@ def connect_reuse_seed(seed: gr.Number, reuse_seed: gr.Button, generation_info: 
                 res = all_seeds[index if 0 <= index < len(all_seeds) else 0]
 
         except json.decoder.JSONDecodeError:
-            if gen_info_string != '':
+            if gen_info_string:
                 print("Error parsing JSON generation info:", file=sys.stderr)
                 print(gen_info_string, file=sys.stderr)
 

@@ -322,7 +322,7 @@ def install_extension_from_url(dirname, url, branch_name=None):
 
     assert url, 'No URL specified'
 
-    if dirname is None or dirname == "":
+    if not dirname:
         *parts, last_part = url.split('/')
         last_part = normalize_git_url(last_part)
 
