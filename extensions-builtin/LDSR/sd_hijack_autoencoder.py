@@ -166,6 +166,7 @@ class VQModel(pl.LightningModule):
                                             last_layer=self.get_last_layer(), split="train")
             self.log_dict(log_dict_disc, prog_bar=False, logger=True, on_step=True, on_epoch=True)
             return discloss
+        return None
 
     def validation_step(self, batch, batch_idx):
         log_dict = self._validation_step(batch, batch_idx)

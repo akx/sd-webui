@@ -134,6 +134,7 @@ class NoiseScheduleVP:
             log_alpha_fn = lambda s: torch.log(torch.cos((s + self.cosine_s) / (1. + self.cosine_s) * math.pi / 2.))
             log_alpha_t =  log_alpha_fn(t) - self.cosine_log_alpha_0
             return log_alpha_t
+        return None
 
     def marginal_alpha(self, t):
         """
@@ -311,6 +312,7 @@ def model_wrapper(
             sigma_t = noise_schedule.marginal_std(t_continuous)
             dims = x.dim()
             return -expand_dims(sigma_t, dims) * output
+        return None
 
     def cond_grad_fn(x, t_input, condition):
         """
@@ -363,6 +365,7 @@ def model_wrapper(
                     c_in = torch.cat([unconditional_condition, condition])
                 noise_uncond, noise = noise_pred_fn(x_in, t_in, cond=c_in).chunk(2)
                 return noise_uncond + guidance_scale * (noise - noise_uncond)
+        return None
 
     assert model_type in ["noise", "x_start", "v"]
     assert guidance_type in ["uncond", "classifier", "classifier-free"]

@@ -96,6 +96,7 @@ class DirWithTextualInversionEmbeddings:
         mt = os.path.getmtime(self.path)
         if self.mtime is None or mt > self.mtime:
             return True
+        return None
 
     def update(self):
         if not os.path.isdir(self.path):

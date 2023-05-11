@@ -192,7 +192,7 @@ def reload_vae_weights(sd_model=None, vae_file=unspecified):
         vae_source = "from function argument"
 
     if loaded_vae_file == vae_file:
-        return
+        return None
 
     if shared.cmd_opts.lowvram or shared.cmd_opts.medvram:
         lowvram.send_everything_to_cpu()

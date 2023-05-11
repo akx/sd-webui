@@ -482,7 +482,7 @@ class Options:
                 raise RuntimeError(f"not possible to set {key} because it is restricted")
 
             self.data[key] = value
-            return
+            return None
 
         return super().__setattr__(key, value)
 

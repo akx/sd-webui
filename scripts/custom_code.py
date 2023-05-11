@@ -33,6 +33,7 @@ def exec_with_return(code, module):
         return eval(compile(convertExpr2Expression(last_ast.body[0]), "<ast>", "eval"), module.__dict__)
     else:
         exec(compile(last_ast, "<ast>", "exec"), module.__dict__)
+        return None
 
 
 class Script(scripts.Script):

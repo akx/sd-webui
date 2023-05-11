@@ -71,7 +71,7 @@ class CheckpointInfo:
     def calculate_shorthash(self):
         self.sha256 = hashes.sha256(self.filename, f"checkpoint/{self.name}")
         if self.sha256 is None:
-            return
+            return None
 
         self.shorthash = self.sha256[0:10]
 
@@ -517,7 +517,7 @@ def reload_model_weights(sd_model=None, info=None):
     else:
         current_checkpoint_info = sd_model.sd_checkpoint_info
         if sd_model.sd_model_checkpoint == checkpoint_info.filename:
-            return
+            return None
 
         if shared.cmd_opts.lowvram or shared.cmd_opts.medvram:
             lowvram.send_everything_to_cpu()

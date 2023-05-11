@@ -460,3 +460,4 @@ def conv_block(in_nc, out_nc, kernel_size, stride=1, dilation=1, groups=1, bias=
             a = act(act_type, inplace=False)
         n = norm(norm_type, in_nc) if norm_type else None
         return sequential(n, a, p, c)
+    return None

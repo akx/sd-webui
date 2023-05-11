@@ -153,6 +153,7 @@ def process_interrogate(interrogation_function, mode, ii_input_dir, ii_output_di
                 print(interrogation_function(img), file=fp)
 
         return [gr.update(), None]
+    return None
 
 
 def interrogate(image):
@@ -356,7 +357,7 @@ def apply_setting(key, value):
 
     comp_args = opts.data_labels[key].component_args
     if comp_args and isinstance(comp_args, dict) and comp_args.get('visible') is False:
-        return
+        return None
 
     valtype = type(opts.data_labels[key].default)
     oldval = opts.data.get(key, None)
@@ -710,6 +711,7 @@ def create_ui():
                                 has_exact_match = np.any(np.all(np.array(image) == np.array(state), axis=-1))
                                 edited = same_size and has_exact_match
                                 return image if not edited or state is None else state
+                            return None
 
                         inpaint_color_sketch.change(update_orig, [inpaint_color_sketch, inpaint_color_sketch_orig], inpaint_color_sketch_orig)
 
