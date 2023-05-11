@@ -1702,7 +1702,7 @@ def create_ui():
             outputs=[component_dict['sd_model_checkpoint'], text_settings],
         )
 
-        component_keys = [k for k in opts.data_labels.keys() if k in component_dict]
+        component_keys = [k for k in opts.data_labels if k in component_dict]
 
         def get_settings_values():
             return [get_value_for_setting(key) for key in component_keys]

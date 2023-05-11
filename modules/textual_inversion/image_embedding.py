@@ -212,4 +212,4 @@ if __name__ == '__main__':
 
     hunna_kay_random_sum = sum(np.array([next(g) for _ in range(100000)]).astype(np.uint8).tolist())
 
-    assert 12731374 == hunna_kay_random_sum
+    assert hunna_kay_random_sum == 12731374

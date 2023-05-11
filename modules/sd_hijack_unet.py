@@ -38,7 +38,7 @@ th = TorchHijackForUnet()
 def apply_model(orig_func, self, x_noisy, t, cond, **kwargs):
 
     if isinstance(cond, dict):
-        for y in cond.keys():
+        for y in cond:
             cond[y] = [x.to(devices.dtype_unet) if isinstance(x, torch.Tensor) else x for x in cond[y]]
 
     with devices.autocast():

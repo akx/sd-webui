@@ -672,7 +672,7 @@ class LatentDiffusionV1(DDPMV1):
             else:
                 xc = x
             if not self.cond_stage_trainable or force_c_encode:
-                if isinstance(xc, dict) or isinstance(xc, list):
+                if isinstance(xc, (dict, list)):
                     # import pudb; pudb.set_trace()
                     c = self.get_learned_conditioning(xc)
                 else:
@@ -1108,10 +1108,7 @@ class LatentDiffusionV1(DDPMV1):
             shape = [batch_size] + list(shape)
         else:
             b = batch_size = shape[0]
-        if x_T is None:
-            img = torch.randn(shape, device=self.device)
-        else:
-            img = x_T
+        img = torch.randn(shape, device=self.device) if x_T is None else x_T
         intermediates = []
         if cond is not None:
             if isinstance(cond, dict):
@@ -1163,10 +1160,7 @@ class LatentDiffusionV1(DDPMV1):
             log_every_t = self.log_every_t
         device = self.betas.device
         b = shape[0]
-        if x_T is None:
-            img = torch.randn(shape, device=device)
-        else:
-            img = x_T
+        img = torch.randn(shape, device=device) if x_T is None else x_T
 
         intermediates = [img]
         if timesteps is None:

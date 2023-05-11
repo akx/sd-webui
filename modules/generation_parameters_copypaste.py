@@ -151,10 +151,7 @@ def connect_paste_params_buttons():
 
 
 def send_image_and_dimensions(x):
-    if isinstance(x, Image.Image):
-        img = x
-    else:
-        img = image_from_url_text(x)
+    img = x if isinstance(x, Image.Image) else image_from_url_text(x)
 
     if shared.opts.send_size and isinstance(img, Image.Image):
         w = img.width
@@ -178,13 +175,13 @@ def find_hypernetwork_key(hypernet_name, hypernet_hash=None):
     hypernet_name = hypernet_name.lower()
     if hypernet_hash is not None:
         # Try to match the hash in the name
-        for hypernet_key in shared.hypernetworks.keys():
+        for hypernet_key in shared.hypernetworks:
             result = re_hypernet_hash.search(hypernet_key)
             if result is not None and result[1] == hypernet_hash:
                 return hypernet_key
     else:
         # Fall back to a hypernet with the same name
-        for hypernet_key in shared.hypernetworks.keys():
+        for hypernet_key in shared.hypernetworks:
             if hypernet_key.lower().startswith(hypernet_name):
                 return hypernet_key
 
@@ -355,10 +352,7 @@ def connect_paste(button, paste_fields, input_comp, override_settings_component,
         res = []
 
         for output, key in paste_fields:
-            if callable(key):
-                v = key(params)
-            else:
-                v = params.get(key, None)
+            v = key(params) if callable(key) else params.get(key, None)
 
             if v is None:
                 res.append(gr.update())
@@ -368,10 +362,7 @@ def connect_paste(button, paste_fields, input_comp, override_settings_component,
                 try:
                     valtype = type(output.value)
 
-                    if valtype == bool and v == "False":
-                        val = False
-                    else:
-                        val = valtype(v)
+                    val = False if valtype == bool and v == 'False' else valtype(v)
 
                     res.append(gr.update(value=val))
                 except Exception:

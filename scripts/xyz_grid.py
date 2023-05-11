@@ -601,22 +601,13 @@ class Script(scripts.Script):
         second_axes_processed = 'y'
         if x_opt.cost > y_opt.cost and x_opt.cost > z_opt.cost:
             first_axes_processed = 'x'
-            if y_opt.cost > z_opt.cost:
-                second_axes_processed = 'y'
-            else:
-                second_axes_processed = 'z'
+            second_axes_processed = "y" if y_opt.cost > z_opt.cost else "z"
         elif y_opt.cost > x_opt.cost and y_opt.cost > z_opt.cost:
             first_axes_processed = 'y'
-            if x_opt.cost > z_opt.cost:
-                second_axes_processed = 'x'
-            else:
-                second_axes_processed = 'z'
+            second_axes_processed = "x" if x_opt.cost > z_opt.cost else "z"
         elif z_opt.cost > x_opt.cost and z_opt.cost > y_opt.cost:
             first_axes_processed = 'z'
-            if x_opt.cost > y_opt.cost:
-                second_axes_processed = 'x'
-            else:
-                second_axes_processed = 'y'
+            second_axes_processed = "x" if x_opt.cost > y_opt.cost else "y"
 
         grid_infotext = [None] * (1 + len(zs))
 

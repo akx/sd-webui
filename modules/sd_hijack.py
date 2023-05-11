@@ -14,6 +14,7 @@ import ldm.modules.diffusionmodules.openaimodel
 import ldm.models.diffusion.ddim
 import ldm.models.diffusion.plms
 import ldm.modules.encoders.modules
+import contextlib
 
 attention_CrossAttention_forward = ldm.modules.attention.CrossAttention.forward
 diffusionmodules_model_nonlinearity = ldm.modules.diffusionmodules.model.nonlinearity
@@ -115,11 +116,10 @@ def weighted_forward(sd_model, x, c, w, *args, **kwargs):
         #Run the standard forward function, but with the patched 'get_loss'
         return sd_model.forward(x, c, *args, **kwargs)
     finally:
-        try:
+        with contextlib.suppress(AttributeError):
             #Delete temporary weights if appended
             del sd_model._custom_loss_weight
-        except AttributeError:
-            pass
+
 
         #If we have an old loss function, reset the loss function to the original one
         if hasattr(sd_model, '_old_get_loss'):
@@ -131,10 +131,9 @@ def apply_weighted_forward(sd_model):
     sd_model.weighted_forward = MethodType(weighted_forward, sd_model)
 
 def undo_weighted_forward(sd_model):
-    try:
+    with contextlib.suppress(AttributeError):
         del sd_model.weighted_forward
-    except AttributeError:
-        pass
+
 
 
 class StableDiffusionModelHijack:

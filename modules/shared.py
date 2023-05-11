@@ -488,9 +488,8 @@ class Options:
         return super(Options, self).__setattr__(key, value)
 
     def __getattr__(self, item):
-        if self.data is not None:
-            if item in self.data:
-                return self.data[item]
+        if self.data is not None and item in self.data:
+            return self.data[item]
 
         if item in self.data_labels:
             return self.data_labels[item].default
@@ -569,7 +568,7 @@ class Options:
             func()
 
     def dumpjson(self):
-        d = {k: self.data.get(k, self.data_labels.get(k).default) for k in self.data_labels.keys()}
+        d = {k: self.data.get(k, self.data_labels.get(k).default) for k in self.data_labels}
         return json.dumps(d)
 
     def add_option(self, key, info):

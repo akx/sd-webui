@@ -17,6 +17,7 @@ from ldm.util import instantiate_from_config
 from modules import paths, shared, modelloader, devices, script_callbacks, sd_vae, sd_disable_initialization, errors, hashes, sd_models_config
 from modules.sd_hijack_inpainting import do_inpainting_hijack
 from modules.timer import Timer
+import contextlib
 
 model_dir = "Stable-diffusion"
 model_path = os.path.abspath(os.path.join(paths.models_path, model_dir))
@@ -235,10 +236,9 @@ def read_metadata_from_safetensors(filename):
         for k, v in json_obj.get("__metadata__", {}).items():
             res[k] = v
             if isinstance(v, str) and v[0:1] == '{':
-                try:
+                with contextlib.suppress(Exception):
                     res[k] = json.loads(v)
-                except Exception:
-                    pass
+
 
         return res
 

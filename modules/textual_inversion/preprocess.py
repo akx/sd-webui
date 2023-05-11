@@ -89,10 +89,7 @@ def split_pic(image, inverse_xy, width, height, overlap_ratio):
         from_w, from_h = image.width, image.height
         to_w, to_h = width, height
     h = from_h * to_w // from_w
-    if inverse_xy:
-        image = image.resize((h, to_w))
-    else:
-        image = image.resize((to_w, h))
+    image = image.resize((h, to_w)) if inverse_xy else image.resize((to_w, h))
 
     split_count = math.ceil((h - to_h * overlap_ratio) / (to_h * (1.0 - overlap_ratio)))
     y_step = (h - to_h) / (split_count - 1)

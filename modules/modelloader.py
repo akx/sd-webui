@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 from modules import shared
 from modules.upscaler import Upscaler, UpscalerLanczos, UpscalerNearest, UpscalerNone
 from modules.paths import script_path, models_path
+import contextlib
 
 
 def load_models(model_path: str, model_url: str = None, command_path: str = None, ext_filter=None, download_name=None, ext_blacklist=None) -> list:
@@ -101,14 +102,12 @@ def move_files(src_path: str, dest_path: str, ext_filter: str = None):
             for file in os.listdir(src_path):
                 fullpath = os.path.join(src_path, file)
                 if os.path.isfile(fullpath):
-                    if ext_filter is not None:
-                        if ext_filter not in file:
-                            continue
+                    if ext_filter is not None and ext_filter not in file:
+                        continue
                     print(f"Moving {file} from {src_path} to {dest_path}.")
-                    try:
+                    with contextlib.suppress(Exception):
                         shutil.move(fullpath, dest_path)
-                    except Exception:
-                        pass
+
             if len(os.listdir(src_path)) == 0:
                 print(f"Removing empty folder: {src_path}")
                 shutil.rmtree(src_path, True)
@@ -124,10 +123,9 @@ def load_upscalers():
         if "_model.py" in file:
             model_name = file.replace("_model.py", "")
             full_model = f"modules.{model_name}_model"
-            try:
+            with contextlib.suppress(Exception):
                 importlib.import_module(full_model)
-            except Exception:
-                pass
+
 
     datas = []
     commandline_options = vars(shared.cmd_opts)

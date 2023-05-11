@@ -270,7 +270,7 @@ class Api:
 
         # Now check for always on scripts
         if request.alwayson_scripts and (len(request.alwayson_scripts) > 0):
-            for alwayson_script_name in request.alwayson_scripts.keys():
+            for alwayson_script_name in request.alwayson_scripts:
                 alwayson_script = self.get_script(alwayson_script_name, script_runner)
                 if alwayson_script is None:
                     raise HTTPException(status_code=422, detail=f"always on script {alwayson_script_name} not found")
@@ -495,7 +495,7 @@ class Api:
 
     def get_config(self):
         options = {}
-        for key in shared.opts.data.keys():
+        for key in shared.opts.data:
             metadata = shared.opts.data_labels.get(key)
             if(metadata is not None):
                 options.update({key: shared.opts.data.get(key, shared.opts.data_labels.get(key).default)})

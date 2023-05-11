@@ -20,6 +20,7 @@ import hashlib
 from modules import sd_samplers, shared, script_callbacks, errors
 from modules.paths_internal import roboto_ttf_file
 from modules.shared import opts
+import contextlib
 
 LANCZOS = (Image.Resampling.LANCZOS if hasattr(Image, 'Resampling') else Image.LANCZOS)
 
@@ -342,7 +343,7 @@ class FilenameGenerator:
         'cfg': lambda self: self.p and self.p.cfg_scale,
         'width': lambda self: self.image.width,
         'height': lambda self: self.image.height,
-        'styles': lambda self: self.p and sanitize_filename_part(", ".join([style for style in self.p.styles if not style == "None"]) or "None", replace_spaces=False),
+        'styles': lambda self: self.p and sanitize_filename_part(", ".join([style for style in self.p.styles if style != 'None']) or "None", replace_spaces=False),
         'sampler': lambda self: self.p and sanitize_filename_part(self.p.sampler_name, replace_spaces=False),
         'model_hash': lambda self: getattr(self.p, "sd_model_hash", shared.sd_model.sd_model_hash),
         'model_name': lambda self: sanitize_filename_part(shared.sd_model.sd_checkpoint_info.model_name, replace_spaces=False),
@@ -474,10 +475,9 @@ def get_next_sequence_number(path, basename):
     for p in os.listdir(path):
         if p.startswith(basename):
             parts = os.path.splitext(p[prefix_length:])[0].split('-')  # splits the filename (removing the basename first if one is defined, so the sequence number is always the first element)
-            try:
+            with contextlib.suppress(ValueError):
                 result = max(int(parts[0]), result)
-            except ValueError:
-                pass
+
 
     return result + 1
 

@@ -89,10 +89,10 @@ class HypernetworkModule(torch.nn.Module):
                         xavier_normal_(w)
                         zeros_(b)
                     elif weight_init == 'KaimingUniform':
-                        kaiming_uniform_(w, nonlinearity='leaky_relu' if 'leakyrelu' == activation_func else 'relu')
+                        kaiming_uniform_(w, nonlinearity='leaky_relu' if activation_func == 'leakyrelu' else 'relu')
                         zeros_(b)
                     elif weight_init == 'KaimingNormal':
-                        kaiming_normal_(w, nonlinearity='leaky_relu' if 'leakyrelu' == activation_func else 'relu')
+                        kaiming_normal_(w, nonlinearity='leaky_relu' if activation_func == 'leakyrelu' else 'relu')
                         zeros_(b)
                     else:
                         raise KeyError(f"Key {weight_init} is not defined as initialization!")
@@ -437,16 +437,10 @@ def stack_conds(conds):
 
 
 def statistics(data):
-    if len(data) < 2:
-        std = 0
-    else:
-        std = stdev(data)
+    std = 0 if len(data) < 2 else stdev(data)
     total_information = f"loss:{mean(data):.3f}" + u"\u00B1" + f"({std/ (len(data) ** 0.5):.3f})"
     recent_data = data[-32:]
-    if len(recent_data) < 2:
-        std = 0
-    else:
-        std = stdev(recent_data)
+    std = 0 if len(recent_data) < 2 else stdev(recent_data)
     recent_information = f"recent 32 loss:{mean(recent_data):.3f}" + u"\u00B1" + f"({std / (len(recent_data) ** 0.5):.3f})"
     return total_information, recent_information
 

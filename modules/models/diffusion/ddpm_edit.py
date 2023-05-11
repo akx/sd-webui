@@ -1124,10 +1124,7 @@ class LatentDiffusion(DDPM):
             shape = [batch_size] + list(shape)
         else:
             b = batch_size = shape[0]
-        if x_T is None:
-            img = torch.randn(shape, device=self.device)
-        else:
-            img = x_T
+        img = torch.randn(shape, device=self.device) if x_T is None else x_T
         intermediates = []
         if cond is not None:
             if isinstance(cond, dict):
@@ -1179,10 +1176,7 @@ class LatentDiffusion(DDPM):
             log_every_t = self.log_every_t
         device = self.betas.device
         b = shape[0]
-        if x_T is None:
-            img = torch.randn(shape, device=device)
-        else:
-            img = x_T
+        img = torch.randn(shape, device=device) if x_T is None else x_T
 
         intermediates = [img]
         if timesteps is None:

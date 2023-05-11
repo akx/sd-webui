@@ -212,7 +212,7 @@ def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_
         shared.state.textinfo = 'Baking in VAE'
         vae_dict = sd_vae.load_vae_dict(bake_in_vae_filename, map_location='cpu')
 
-        for key in vae_dict.keys():
+        for key in vae_dict:
             theta_0_key = 'first_stage_model.' + key
             if theta_0_key in theta_0:
                 theta_0[theta_0_key] = to_half(vae_dict[key], save_as_half)
@@ -220,7 +220,7 @@ def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_
         del vae_dict
 
     if save_as_half and not theta_func2:
-        for key in theta_0.keys():
+        for key in theta_0:
             theta_0[key] = to_half(theta_0[key], save_as_half)
 
     if discard_weights:
@@ -231,7 +231,7 @@ def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_
 
     ckpt_dir = shared.cmd_opts.ckpt_dir or sd_models.model_path
 
-    filename = filename_generator() if not custom_name else custom_name
+    filename = custom_name if custom_name else filename_generator()
     filename += ".inpainting" if result_is_inpainting_model else ""
     filename += ".instruct-pix2pix" if result_is_instruct_pix2pix_model else ""
     filename += "." + checkpoint_format

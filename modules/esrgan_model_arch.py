@@ -129,10 +129,7 @@ class ResidualDenseBlock_5C(nn.Module):
         self.conv4 = conv_block(nf+3*gc, gc, kernel_size, stride, bias=bias, pad_type=pad_type,
             norm_type=norm_type, act_type=act_type, mode=mode, convtype=convtype,
             spectral_norm=spectral_norm)
-        if mode == 'CNA':
-            last_act = None
-        else:
-            last_act = act_type
+        last_act = None if mode == 'CNA' else act_type
         self.conv5 = conv_block(nf+4*gc, nf, 3, stride, bias=bias, pad_type=pad_type,
             norm_type=norm_type, act_type=last_act, mode=mode, convtype=convtype,
             spectral_norm=spectral_norm)

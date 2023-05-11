@@ -11,6 +11,7 @@ from modules.shared import opts, state
 from swinir_model_arch import SwinIR as net
 from swinir_model_arch_v2 import Swin2SR as net2
 from modules.upscaler import Upscaler, UpscalerData
+import contextlib
 
 
 device_swinir = devices.get_device_for('swinir')
@@ -42,10 +43,9 @@ class UpscalerSwinIR(Upscaler):
             return img
         model = model.to(device_swinir, dtype=devices.dtype)
         img = upscale(img, model)
-        try:
+        with contextlib.suppress(Exception):
             torch.cuda.empty_cache()
-        except Exception:
-            pass
+
         return img
 
     def load_model(self, path, scale=4):

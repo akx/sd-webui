@@ -25,7 +25,7 @@ def process_float_tag(tag):
 
 
 def process_boolean_tag(tag):
-    return True if (tag == "true") else False
+    return tag == "true"
 
 
 prompt_tags = {

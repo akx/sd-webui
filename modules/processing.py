@@ -29,6 +29,7 @@ from ldm.models.diffusion.ddpm import LatentDepth2ImageDiffusion
 
 from einops import repeat, rearrange
 from blendmodes.blend import blendLayers, BlendType
+import contextlib
 
 # some of those options should not be changed at all because they would break the model, so I removed them from options.
 opt_C = 4
@@ -505,7 +506,7 @@ def create_infotext(p, all_prompts, all_seeds, all_subseeds, comments=None, iter
 
 
 def process_images(p: StableDiffusionProcessing) -> Processed:
-    stored_opts = {k: opts.data[k] for k in p.override_settings.keys()}
+    stored_opts = {k: opts.data[k] for k in p.override_settings}
 
     try:
         # if no checkpoint override or the override checkpoint can't be found, remove override entry and load opts checkpoint
@@ -661,10 +662,9 @@ def process_images_inner(p: StableDiffusionProcessing) -> Processed:
 
             step_multiplier = 1
             if not shared.opts.dont_fix_second_order_samplers_schedule:
-                try:
+                with contextlib.suppress(Exception):
                     step_multiplier = 2 if sd_samplers.all_samplers_map.get(p.sampler_name).aliases[0] in ['k_dpmpp_2s_a', 'k_dpmpp_2s_a_ka', 'k_dpmpp_sde', 'k_dpmpp_sde_ka', 'k_dpm_2', 'k_dpm_2_a', 'k_heun'] else 1
-                except Exception:
-                    pass
+
             uc = get_conds_with_caching(prompt_parser.get_learned_conditioning, negative_prompts, p.steps * step_multiplier, cached_uc)
             c = get_conds_with_caching(prompt_parser.get_multicond_learned_conditioning, prompts, p.steps * step_multiplier, cached_c)
 
@@ -1070,9 +1070,8 @@ class StableDiffusionProcessingImg2Img(StableDiffusionProcessing):
                 image = image.crop(crop_region)
                 image = images.resize_image(2, image, self.width, self.height)
 
-            if image_mask is not None:
-                if self.inpainting_fill != 1:
-                    image = masking.fill(image, latent_mask)
+            if image_mask is not None and self.inpainting_fill != 1:
+                image = masking.fill(image, latent_mask)
 
             if add_color_corrections:
                 self.color_corrections.append(setup_color_correction(image))
