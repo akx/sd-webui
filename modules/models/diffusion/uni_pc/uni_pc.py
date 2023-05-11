@@ -49,12 +49,12 @@ class NoiseScheduleVP:
             Note that we always have alphas_cumprod = cumprod(betas). Therefore, we only need to set one of `betas` and `alphas_cumprod`.
 
             **Important**:  Please pay special attention for the args for `alphas_cumprod`:
-                The `alphas_cumprod` is the \hat{alpha_n} arrays in the notations of DDPM. Specifically, DDPMs assume that
-                    q_{t_n | 0}(x_{t_n} | x_0) = N ( \sqrt{\hat{alpha_n}} * x_0, (1 - \hat{alpha_n}) * I ).
-                Therefore, the notation \hat{alpha_n} is different from the notation alpha_t in DPM-Solver. In fact, we have
-                    alpha_{t_n} = \sqrt{\hat{alpha_n}},
+                The `alphas_cumprod` is the \\hat{alpha_n} arrays in the notations of DDPM. Specifically, DDPMs assume that
+                    q_{t_n | 0}(x_{t_n} | x_0) = N ( \\sqrt{\\hat{alpha_n}} * x_0, (1 - \\hat{alpha_n}) * I ).
+                Therefore, the notation \\hat{alpha_n} is different from the notation alpha_t in DPM-Solver. In fact, we have
+                    alpha_{t_n} = \\sqrt{\\hat{alpha_n}},
                 and
-                    log(alpha_{t_n}) = 0.5 * log(\hat{alpha_n}).
+                    log(alpha_{t_n}) = 0.5 * log(\\hat{alpha_n}).
 
 
         2. For continuous-time DPMs:
@@ -84,7 +84,7 @@ class NoiseScheduleVP:
         # For discrete-time DPMs, given betas (the beta array for n = 0, 1, ..., N - 1):
         >>> ns = NoiseScheduleVP('discrete', betas=betas)
 
-        # For discrete-time DPMs, given alphas_cumprod (the \hat{alpha_n} array for n = 0, 1, ..., N - 1):
+        # For discrete-time DPMs, given alphas_cumprod (the \\hat{alpha_n} array for n = 0, 1, ..., N - 1):
         >>> ns = NoiseScheduleVP('discrete', alphas_cumprod=alphas_cumprod)
 
         # For continuous-time DPMs (VPSDE), linear schedule:
