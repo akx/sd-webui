@@ -149,7 +149,8 @@ def process_interrogate(interrogation_function, mode, ii_input_dir, ii_output_di
             img = Image.open(image)
             filename = os.path.basename(image)
             left, _ = os.path.splitext(filename)
-            print(interrogation_function(img), file=open(os.path.join(ii_output_dir, f"{left}.txt"), 'a'))
+            with open(os.path.join(ii_output_dir, f"{left}.txt"), 'a') as fp:
+                print(interrogation_function(img), file=fp)
 
         return [gr.update(), None]
 

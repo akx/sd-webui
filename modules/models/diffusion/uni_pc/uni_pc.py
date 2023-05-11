@@ -779,11 +779,7 @@ class UniPC:
                         else:
                             step_order = order
                         #print('this step order:', step_order)
-                        if step == steps:
-                            #print('do not run corrector at the last step')
-                            use_corrector = False
-                        else:
-                            use_corrector = True
+                        use_corrector = (step != steps)  # do not run corrector at the last step
                         x, model_x =  self.multistep_uni_pc_update(x, model_prev_list, t_prev_list, vec_t, step_order, use_corrector=use_corrector)
                         if self.after_update is not None:
                             self.after_update(x, model_x)

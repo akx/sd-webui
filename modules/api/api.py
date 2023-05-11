@@ -214,9 +214,11 @@ class Api:
         return self.app.add_api_route(path, endpoint, **kwargs)
 
     def auth(self, credentials: HTTPBasicCredentials = Depends(HTTPBasic())):
-        if credentials.username in self.credentials:
-            if compare_digest(credentials.password, self.credentials[credentials.username]):
-                return True
+        if (
+            credentials.username in self.credentials and
+            compare_digest(credentials.password, self.credentials[credentials.username])
+        ):
+            return True
 
         raise HTTPException(status_code=401, detail="Incorrect username or password", headers={"WWW-Authenticate": "Basic"})
 

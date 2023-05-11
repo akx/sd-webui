@@ -159,11 +159,11 @@ def load_lora(name, filename):
             lora_module.alpha = weight.item()
             continue
 
-        if type(sd_module) == torch.nn.Linear:
-            module = torch.nn.Linear(weight.shape[1], weight.shape[0], bias=False)
-        elif type(sd_module) == torch.nn.modules.linear.NonDynamicallyQuantizableLinear:
-            module = torch.nn.Linear(weight.shape[1], weight.shape[0], bias=False)
-        elif type(sd_module) == torch.nn.MultiheadAttention:
+        if type(sd_module) in (
+            torch.nn.Linear,
+            torch.nn.modules.linear.NonDynamicallyQuantizableLinear,
+            torch.nn.MultiheadAttention,
+        ):
             module = torch.nn.Linear(weight.shape[1], weight.shape[0], bias=False)
         elif type(sd_module) == torch.nn.Conv2d and weight.shape[2:] == (1, 1):
             module = torch.nn.Conv2d(weight.shape[1], weight.shape[0], (1, 1), bias=False)
@@ -211,13 +211,12 @@ def load_loras(names, multipliers=None):
         lora = already_loaded.get(name, None)
 
         lora_on_disk = loras_on_disk[i]
-        if lora_on_disk is not None:
-            if lora is None or os.path.getmtime(lora_on_disk.filename) > lora.mtime:
-                try:
-                    lora = load_lora(name, lora_on_disk.filename)
-                except Exception as e:
-                    errors.display(e, f"loading Lora {lora_on_disk.filename}")
-                    continue
+        if lora_on_disk is not None and (lora is None or os.path.getmtime(lora_on_disk.filename) > lora.mtime):
+            try:
+                lora = load_lora(name, lora_on_disk.filename)
+            except Exception as e:
+                errors.display(e, f"loading Lora {lora_on_disk.filename}")
+                continue
 
         if lora is None:
             print(f"Couldn't find Lora with name {name}")

@@ -435,6 +435,8 @@ def refresh_available_extensions_from_data(hide_tags, sort_column, filter_text="
 
     sort_reverse, sort_function = sort_ordering[sort_column if 0 <= sort_column < len(sort_ordering) else 0]
 
+    processed_filter_text = filter_text.strip().lower() if filter_text else None
+
     for ext in sorted(extlist, key=sort_function, reverse=sort_reverse):
         name = ext.get("name", "noname")
         added = ext.get('added', 'unknown')
@@ -452,10 +454,12 @@ def refresh_available_extensions_from_data(hide_tags, sort_column, filter_text="
             hidden += 1
             continue
 
-        if filter_text and filter_text.strip():
-            if filter_text.lower() not in html.escape(name).lower() and filter_text.lower() not in html.escape(description).lower():
-                hidden += 1
-                continue
+        if processed_filter_text and not (
+            processed_filter_text in html.escape(name).lower() or
+            processed_filter_text in html.escape(description).lower()
+        ):
+            hidden += 1
+            continue
 
         install_code = f"""<button onclick="install_extension_from_index(this, '{html.escape(url)}')" {"disabled=disabled" if existing else ""} class="lg secondary gradio-button custom-button">{"Install" if not existing else "Installed"}</button>"""
 

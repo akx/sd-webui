@@ -135,14 +135,12 @@ class InterrogateModels:
         self.dtype = next(self.clip_model.parameters()).dtype
 
     def send_clip_to_ram(self):
-        if not shared.opts.interrogate_keep_models_in_memory:
-            if self.clip_model is not None:
-                self.clip_model = self.clip_model.to(devices.cpu)
+        if not shared.opts.interrogate_keep_models_in_memory and self.clip_model is not None:
+            self.clip_model = self.clip_model.to(devices.cpu)
 
     def send_blip_to_ram(self):
-        if not shared.opts.interrogate_keep_models_in_memory:
-            if self.blip_model is not None:
-                self.blip_model = self.blip_model.to(devices.cpu)
+        if not shared.opts.interrogate_keep_models_in_memory and self.blip_model is not None:
+            self.blip_model = self.blip_model.to(devices.cpu)
 
     def unload(self):
         self.send_clip_to_ram()

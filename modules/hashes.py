@@ -13,9 +13,8 @@ cache_data = None
 
 
 def dump_cache():
-    with filelock.FileLock(f"{cache_filename}.lock"):
-        with open(cache_filename, "w", encoding="utf8") as file:
-            json.dump(cache_data, file, indent=4)
+    with filelock.FileLock(f"{cache_filename}.lock"), open(cache_filename, "w", encoding="utf8") as file:
+        json.dump(cache_data, file, indent=4)
 
 
 def cache(subsection):

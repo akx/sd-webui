@@ -18,12 +18,10 @@ def crop_image(im, settings):
     elif is_portrait(im.width, im.height):
         scale_by = settings.crop_width / im.width
     elif is_square(im.width, im.height):
-        if is_square(settings.crop_width, settings.crop_height):
-            scale_by = settings.crop_width / im.width
-        elif is_landscape(settings.crop_width, settings.crop_height):
-            scale_by = settings.crop_width / im.width
-        elif is_portrait(settings.crop_width, settings.crop_height):
+        if is_portrait(settings.crop_width, settings.crop_height):
             scale_by = settings.crop_height / im.height
+        else:
+            scale_by = settings.crop_width / im.width
 
 
     im = im.resize((int(im.width * scale_by), int(im.height * scale_by)))
