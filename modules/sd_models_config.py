@@ -5,7 +5,12 @@ import torch
 from modules import shared, paths, sd_disable_initialization
 
 sd_configs_path = shared.sd_configs_path
-sd_repo_configs_path = os.path.join(paths.paths['Stable Diffusion'], "configs", "stable-diffusion")
+
+try:
+    from ldm import get_configs_path
+    sd_repo_configs_path = os.path.join(get_configs_path(), "stable-diffusion")
+except ImportError:
+    sd_repo_configs_path = os.path.join(paths.paths['Stable Diffusion'], "configs", "stable-diffusion")
 
 
 config_default = shared.sd_default_config
@@ -115,4 +120,3 @@ def find_checkpoint_config_near_filename(info):
         return config
 
     return None
-
