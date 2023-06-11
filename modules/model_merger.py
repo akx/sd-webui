@@ -11,6 +11,51 @@ import tqdm
 
 from modules import sd_models_config, shared, sd_models, sd_vae
 
+checkpoint_dict_skip_on_merge = {
+    "cond_stage_model.transformer.text_model.embeddings.position_ids",
+}
+
+
+def weighted_sum(theta0, theta1, alpha):
+    return ((1 - alpha) * theta0) + (alpha * theta1)
+
+
+def get_difference(theta1, theta2):
+    return theta1 - theta2
+
+
+def add_difference(theta0, theta1_2_diff, alpha):
+    return theta0 + (alpha * theta1_2_diff)
+
+
+def filename_weighted_sum(*, model_infos, multiplier):
+    a = model_infos[0].model_name
+    b = model_infos[1].model_name
+    Ma = round(1 - multiplier, 2)
+    Mb = round(multiplier, 2)
+
+    return f"{Ma}({a}) + {Mb}({b})"
+
+
+def filename_add_difference(*, model_infos, multiplier):
+    a = model_infos[0].model_name
+    b = model_infos[1].model_name
+    c = model_infos[2].model_name
+    M = round(multiplier, 2)
+
+    return f"{a} + {M}({b} - {c})"
+
+
+def filename_nothing(*, model_infos, multiplier):
+    return model_infos[0].model_name
+
+
+theta_funcs = {
+    "Weighted sum": (filename_weighted_sum, None, weighted_sum),
+    "Add difference": (filename_add_difference, get_difference, add_difference),
+    "No interpolation": (filename_nothing, None, None),
+}
+
 
 def create_config(ckpt_result, config_source, a, b, c):
     def config(x):
@@ -38,9 +83,6 @@ def create_config(ckpt_result, config_source, a, b, c):
     shutil.copyfile(cfg, checkpoint_filename)
 
 
-checkpoint_dict_skip_on_merge = ["cond_stage_model.transformer.text_model.embeddings.position_ids"]
-
-
 def to_half(tensor, enable):
     if enable and tensor.dtype == torch.float:
         return tensor.half()
@@ -48,7 +90,21 @@ def to_half(tensor, enable):
     return tensor
 
 
-def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_model_name, interp_method, multiplier, save_as_half, custom_name, checkpoint_format, config_source, bake_in_vae, discard_weights, save_metadata):
+def run_modelmerger(
+    id_task,
+    primary_model_name,
+    secondary_model_name,
+    tertiary_model_name,
+    interp_method,
+    multiplier,
+    save_as_half,
+    custom_name,
+    checkpoint_format,
+    config_source,
+    bake_in_vae,
+    discard_weights,
+    save_metadata,
+):
     shared.state.begin()
     shared.state.job = 'model-merge'
 
@@ -57,39 +113,6 @@ def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_
         shared.state.end()
         return [*[gr.update() for _ in range(4)], message]
 
-    def weighted_sum(theta0, theta1, alpha):
-        return ((1 - alpha) * theta0) + (alpha * theta1)
-
-    def get_difference(theta1, theta2):
-        return theta1 - theta2
-
-    def add_difference(theta0, theta1_2_diff, alpha):
-        return theta0 + (alpha * theta1_2_diff)
-
-    def filename_weighted_sum():
-        a = primary_model_info.model_name
-        b = secondary_model_info.model_name
-        Ma = round(1 - multiplier, 2)
-        Mb = round(multiplier, 2)
-
-        return f"{Ma}({a}) + {Mb}({b})"
-
-    def filename_add_difference():
-        a = primary_model_info.model_name
-        b = secondary_model_info.model_name
-        c = tertiary_model_info.model_name
-        M = round(multiplier, 2)
-
-        return f"{a} + {M}({b} - {c})"
-
-    def filename_nothing():
-        return primary_model_info.model_name
-
-    theta_funcs = {
-        "Weighted sum": (filename_weighted_sum, None, weighted_sum),
-        "Add difference": (filename_add_difference, get_difference, add_difference),
-        "No interpolation": (filename_nothing, None, None),
-    }
     filename_generator, theta_func1, theta_func2 = theta_funcs[interp_method]
     shared.state.job_count = (1 if theta_func1 else 0) + (1 if theta_func2 else 0)
 
@@ -107,6 +130,8 @@ def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_
         return fail(f"Failed: Interpolation method ({interp_method}) requires a tertiary model.")
 
     tertiary_model_info = sd_models.checkpoints_list[tertiary_model_name] if theta_func1 else None
+
+    model_infos = [mi for mi in (primary_model_info, secondary_model_info, tertiary_model_info) if mi]
 
     result_is_inpainting_model = False
     result_is_instruct_pix2pix_model = False
@@ -166,8 +191,9 @@ def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_
                 if a.shape[1] == 4 and b.shape[1] == 8:
                     raise RuntimeError("When merging instruct-pix2pix model with a normal one, A must be the instruct-pix2pix model.")
 
-                if a.shape[1] == 8 and b.shape[1] == 4:#If we have an Instruct-Pix2Pix model...
-                    theta_0[key][:, 0:4, :, :] = theta_func2(a[:, 0:4, :, :], b, multiplier)#Merge only the vectors the models have in common.  Otherwise we get an error due to dimension mismatch.
+                if a.shape[1] == 8 and b.shape[1] == 4:  # If we have an Instruct-Pix2Pix model...
+                    # Merge only the vectors the models have in common.  Otherwise we get an error due to dimension mismatch.
+                    theta_0[key][:, 0:4, :, :] = theta_func2(a[:, 0:4, :, :], b, multiplier)
                     result_is_instruct_pix2pix_model = True
                 else:
                     assert a.shape[1] == 9 and b.shape[1] == 4, f"Bad dimensions for merged layer {key}: A={a.shape}, B={b.shape}"
@@ -207,7 +233,7 @@ def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_
 
     ckpt_dir = shared.cmd_opts.ckpt_dir or sd_models.model_path
 
-    filename = filename_generator() if custom_name == '' else custom_name
+    filename = custom_name or filename_generator(model_infos=model_infos, multiplier=multiplier)
     filename += ".inpainting" if result_is_inpainting_model else ""
     filename += ".instruct-pix2pix" if result_is_instruct_pix2pix_model else ""
     filename += "." + checkpoint_format
@@ -224,7 +250,7 @@ def run_modelmerger(id_task, primary_model_name, secondary_model_name, tertiary_
         metadata = {"format": "pt"}
 
         merge_recipe = {
-            "type": "webui", # indicate this model was merged with webui's built-in merger
+            "type": "webui",  # indicate this model was merged with webui's built-in merger
             "primary_model_hash": primary_model_info.sha256,
             "secondary_model_hash": secondary_model_info.sha256 if secondary_model_info else None,
             "tertiary_model_hash": tertiary_model_info.sha256 if tertiary_model_info else None,
