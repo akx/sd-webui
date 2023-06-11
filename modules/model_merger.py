@@ -101,6 +101,7 @@ def run_modelmerger(
     interp_method,
     multiplier,
     data_format: str,
+    conv_type: str,
     custom_name,
     checkpoint_format,
     config_source,
@@ -233,6 +234,17 @@ def run_modelmerger(
             if re.search(regex, key):
                 theta_0.pop(key, None)
 
+    if conv_type == "EMA only":  # WIP
+        keys_to_keep = {"model_ema.num_updates", "model_ema.decay"}
+        for k in tqdm.tqdm(theta_0):
+            if k.startswith("model_ema."):
+                keys_to_keep.add(k)
+            keys_to_keep.add("model_ema." + k[6:].replace(".", ""))
+    if conv_type == "No EMA":
+        for k, v in tqdm.tqdm(theta_0.items()):
+            if "model_ema." not in k:
+                _hf(k, v)
+
     for key in theta_0.keys():
         theta_0[key] = convert_tensor(theta_0[key], format=data_format)
 
@@ -262,6 +274,7 @@ def run_modelmerger(
             "interp_method": interp_method,
             "multiplier": multiplier,
             "data_format": data_format,
+            "conv_type": conv_type,
             "custom_name": custom_name,
             "config_source": config_source,
             "bake_in_vae": bake_in_vae,
@@ -308,4 +321,5 @@ def run_modelmerger(
     shared.state.textinfo = "Checkpoint saved"
     shared.state.end()
 
-    return [*[gr.Dropdown.update(choices=sd_models.checkpoint_tiles()) for _ in range(4)], "Checkpoint saved to " + output_modelname]
+    return [*[gr.Dropdown.update(choices=sd_models.checkpoint_tiles()) for _ in range(4)],
+            "Checkpoint saved to " + output_modelname]
