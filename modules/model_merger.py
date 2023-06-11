@@ -227,15 +227,14 @@ def run_modelmerger(
 
         del vae_dict
 
-    if not theta_func2:
-        for key in theta_0.keys():
-            theta_0[key] = convert_tensor(theta_0[key], format=data_format)
-
     if discard_weights:
         regex = re.compile(discard_weights)
         for key in list(theta_0):
             if re.search(regex, key):
                 theta_0.pop(key, None)
+
+    for key in theta_0.keys():
+        theta_0[key] = convert_tensor(theta_0[key], format=data_format)
 
     ckpt_dir = shared.cmd_opts.ckpt_dir or sd_models.model_path
 
