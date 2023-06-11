@@ -1110,7 +1110,7 @@ def create_ui():
 
                 with FormRow():
                     checkpoint_format = gr.Radio(choices=["ckpt", "safetensors"], value="safetensors", label="Checkpoint format", elem_id="modelmerger_checkpoint_format")
-                    save_as_half = gr.Checkbox(value=False, label="Save as float16", elem_id="modelmerger_save_as_half")
+                    data_format = gr.Radio(choices=["fp32", "fp16", "bf16"], value="fp32", label="Data format", elem_id="modelmerger_data_format")
                     save_metadata = gr.Checkbox(value=True, label="Save metadata (.safetensors only)", elem_id="modelmerger_save_metadata")
 
                 with FormRow():
@@ -1532,7 +1532,7 @@ def create_ui():
                 tertiary_model_name,
                 interp_method,
                 interp_amount,
-                save_as_half,
+                data_format,
                 custom_name,
                 checkpoint_format,
                 config_source,

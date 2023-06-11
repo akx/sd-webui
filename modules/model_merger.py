@@ -83,11 +83,14 @@ def create_config(ckpt_result, config_source, a, b, c):
     shutil.copyfile(cfg, checkpoint_filename)
 
 
-def to_half(tensor, enable):
-    if enable and tensor.dtype == torch.float:
+def convert_tensor(tensor, *, format: str):
+    if format == "fp16":
         return tensor.half()
-
-    return tensor
+    elif format == "fp32":
+        return tensor.float()
+    elif format == "bf16":
+        return tensor.bfloat16()
+    raise NotImplementedError("unknown format")
 
 
 def run_modelmerger(
@@ -97,7 +100,7 @@ def run_modelmerger(
     tertiary_model_name,
     interp_method,
     multiplier,
-    save_as_half,
+    data_format: str,
     custom_name,
     checkpoint_format,
     config_source,
@@ -187,22 +190,25 @@ def run_modelmerger(
             # have another 4 channels for unmasked picture's latent space, plus one channel for mask, for a total of 9
             if a.shape != b.shape and a.shape[0:1] + a.shape[2:] == b.shape[0:1] + b.shape[2:]:
                 if a.shape[1] == 4 and b.shape[1] == 9:
-                    raise RuntimeError("When merging inpainting model with a normal one, A must be the inpainting model.")
+                    raise RuntimeError(
+                        "When merging inpainting model with a normal one, A must be the inpainting model.")
                 if a.shape[1] == 4 and b.shape[1] == 8:
-                    raise RuntimeError("When merging instruct-pix2pix model with a normal one, A must be the instruct-pix2pix model.")
+                    raise RuntimeError(
+                        "When merging instruct-pix2pix model with a normal one, A must be the instruct-pix2pix model.")
 
                 if a.shape[1] == 8 and b.shape[1] == 4:  # If we have an Instruct-Pix2Pix model...
                     # Merge only the vectors the models have in common.  Otherwise we get an error due to dimension mismatch.
                     theta_0[key][:, 0:4, :, :] = theta_func2(a[:, 0:4, :, :], b, multiplier)
                     result_is_instruct_pix2pix_model = True
                 else:
-                    assert a.shape[1] == 9 and b.shape[1] == 4, f"Bad dimensions for merged layer {key}: A={a.shape}, B={b.shape}"
+                    assert a.shape[1] == 9 and b.shape[
+                        1] == 4, f"Bad dimensions for merged layer {key}: A={a.shape}, B={b.shape}"
                     theta_0[key][:, 0:4, :, :] = theta_func2(a[:, 0:4, :, :], b, multiplier)
                     result_is_inpainting_model = True
             else:
                 theta_0[key] = theta_func2(a, b, multiplier)
 
-            theta_0[key] = to_half(theta_0[key], save_as_half)
+            theta_0[key] = convert_tensor(theta_0[key], format=data_format)
 
         shared.state.sampling_step += 1
 
@@ -217,13 +223,13 @@ def run_modelmerger(
         for key in vae_dict.keys():
             theta_0_key = 'first_stage_model.' + key
             if theta_0_key in theta_0:
-                theta_0[theta_0_key] = to_half(vae_dict[key], save_as_half)
+                theta_0[theta_0_key] = convert_tensor(vae_dict[key], format=data_format)
 
         del vae_dict
 
-    if save_as_half and not theta_func2:
+    if not theta_func2:
         for key in theta_0.keys():
-            theta_0[key] = to_half(theta_0[key], save_as_half)
+            theta_0[key] = convert_tensor(theta_0[key], format=data_format)
 
     if discard_weights:
         regex = re.compile(discard_weights)
@@ -256,7 +262,7 @@ def run_modelmerger(
             "tertiary_model_hash": tertiary_model_info.sha256 if tertiary_model_info else None,
             "interp_method": interp_method,
             "multiplier": multiplier,
-            "save_as_half": save_as_half,
+            "data_format": data_format,
             "custom_name": custom_name,
             "config_source": config_source,
             "bake_in_vae": bake_in_vae,
