@@ -10,6 +10,8 @@ import gradio as gr
 import gradio.utils
 import numpy as np
 from PIL import Image, PngImagePlugin  # noqa: F401
+
+import modules.model_merger
 from modules.call_queue import wrap_gradio_gpu_call, wrap_queued_call, wrap_gradio_call
 
 from modules import sd_hijack, sd_models, script_callbacks, ui_extensions, deepbooru, sd_vae, extra_networks, ui_common, ui_postprocessing, progress, ui_loadsave, errors, shared_items, ui_settings, timer, sysinfo
@@ -35,7 +37,7 @@ from modules.sd_samplers import samplers, samplers_for_img2img
 from modules.textual_inversion import textual_inversion
 import modules.hypernetworks.ui
 from modules.generation_parameters_copypaste import image_from_url_text
-import modules.extras
+import modules.png_info
 
 create_setting_component = ui_settings.create_setting_component
 
@@ -1512,7 +1514,7 @@ def create_ui():
 
         def modelmerger(*args):
             try:
-                results = modules.extras.run_modelmerger(*args)
+                results = modules.model_merger.run_modelmerger(*args)
             except Exception as e:
                 errors.report("Error loading/saving model file", exc_info=True)
                 modules.sd_models.list_models()  # to remove the potentially missing models from the list
