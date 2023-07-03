@@ -1,12 +1,21 @@
+import inspect
 import os
 import re
 import sys
-import inspect
 from collections import namedtuple
 
 import gradio as gr
 
-from modules import shared, paths, script_callbacks, extensions, script_loading, scripts_postprocessing, errors, timer
+from modules import (
+    errors,
+    extensions,
+    paths,
+    script_callbacks,
+    script_loading,
+    scripts_postprocessing,
+    shared,
+    timer,
+)
 
 AlwaysVisible = object()
 

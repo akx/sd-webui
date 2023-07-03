@@ -1,25 +1,23 @@
 import datetime
-
-import pytz
+import hashlib
 import io
+import json
 import math
 import os
-from collections import namedtuple
 import re
+import string
+from collections import namedtuple
 
 import numpy as np
 import piexif
 import piexif.helper
-from PIL import Image, ImageFont, ImageDraw, PngImagePlugin
-import string
-import json
-import hashlib
-
-from modules import sd_samplers, shared, script_callbacks, errors
-from modules.paths_internal import roboto_ttf_file
-from modules.shared import opts
+import pytz
+from PIL import Image, ImageDraw, ImageFont, PngImagePlugin
 
 import modules.sd_vae as sd_vae
+from modules import errors, script_callbacks, sd_samplers, shared
+from modules.paths_internal import roboto_ttf_file
+from modules.shared import opts
 
 LANCZOS = (Image.Resampling.LANCZOS if hasattr(Image, 'Resampling') else Image.LANCZOS)
 

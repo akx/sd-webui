@@ -1,35 +1,58 @@
 import base64
+import datetime
 import io
 import time
-import datetime
-import uvicorn
-import gradio as gr
-from threading import Lock
 from io import BytesIO
-from fastapi import APIRouter, Depends, FastAPI, Request, Response
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from fastapi.exceptions import HTTPException
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 from secrets import compare_digest
+from threading import Lock
+from typing import Any, Dict, List
 
-import modules.shared as shared
-from modules import sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing, errors, restart
-from modules.api import models
-from modules.shared import opts
-from modules.processing import StableDiffusionProcessingTxt2Img, StableDiffusionProcessingImg2Img, process_images
-from modules.textual_inversion.textual_inversion import create_embedding, train_embedding
-from modules.textual_inversion.preprocess import preprocess
-from modules.hypernetworks.hypernetwork import create_hypernetwork, train_hypernetwork
-from PIL import PngImagePlugin,Image
-from modules.sd_models import checkpoints_list, unload_model_weights, reload_model_weights, checkpoint_alisases
-from modules.sd_vae import vae_dict
-from modules.sd_models_config import find_checkpoint_config_near_filename
-from modules.realesrgan_model import get_realesrgan_models
-from modules import devices
-from typing import Dict, List, Any
+import gradio as gr
 import piexif
 import piexif.helper
+import uvicorn
+from fastapi import APIRouter, Depends, FastAPI, Request, Response
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from PIL import Image, PngImagePlugin
+
+import modules.shared as shared
+from modules import (
+    deepbooru,
+    devices,
+    errors,
+    images,
+    postprocessing,
+    restart,
+    scripts,
+    sd_hijack,
+    sd_samplers,
+    ui,
+)
+from modules.api import models
+from modules.hypernetworks.hypernetwork import create_hypernetwork, train_hypernetwork
+from modules.processing import (
+    StableDiffusionProcessingImg2Img,
+    StableDiffusionProcessingTxt2Img,
+    process_images,
+)
+from modules.realesrgan_model import get_realesrgan_models
+from modules.sd_models import (
+    checkpoint_alisases,
+    checkpoints_list,
+    reload_model_weights,
+    unload_model_weights,
+)
+from modules.sd_models_config import find_checkpoint_config_near_filename
+from modules.sd_vae import vae_dict
+from modules.shared import opts
+from modules.textual_inversion.preprocess import preprocess
+from modules.textual_inversion.textual_inversion import (
+    create_embedding,
+    train_embedding,
+)
 
 
 def script_name_to_index(name, scripts):
@@ -97,8 +120,8 @@ def encode_pil_to_base64(image):
 def api_middleware(app: FastAPI):
     rich_available = True
     try:
-        import anyio # importing just so it can be placed on silent list
-        import starlette # importing just so it can be placed on silent list
+        import anyio  # importing just so it can be placed on silent list
+        import starlette  # importing just so it can be placed on silent list
         from rich.console import Console
         console = Console()
     except Exception:
@@ -682,6 +705,7 @@ class Api:
     def get_memory(self):
         try:
             import os
+
             import psutil
             process = psutil.Process(os.getpid())
             res = process.memory_info() # only rss is cross-platform guaranteed so we dont rely on other values

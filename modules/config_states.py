@@ -2,18 +2,17 @@
 Supports saving and restoring webui and extensions from a known working set of commits
 """
 
-import os
 import json
+import os
 import time
+from collections import OrderedDict
+from datetime import datetime
+
+import git
 import tqdm
 
-from datetime import datetime
-from collections import OrderedDict
-import git
-
-from modules import shared, extensions, errors
-from modules.paths_internal import script_path, config_states_dir
-
+from modules import errors, extensions, shared
+from modules.paths_internal import config_states_dir, script_path
 
 all_config_states = OrderedDict()
 

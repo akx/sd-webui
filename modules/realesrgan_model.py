@@ -4,9 +4,9 @@ import numpy as np
 from PIL import Image
 from realesrgan import RealESRGANer
 
-from modules.upscaler import Upscaler, UpscalerData
+from modules import errors, modelloader
 from modules.shared import cmd_opts, opts
-from modules import modelloader, errors
+from modules.upscaler import Upscaler, UpscalerData
 
 
 class UpscalerRealESRGAN(Upscaler):

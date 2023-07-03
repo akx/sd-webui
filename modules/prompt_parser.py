@@ -1,6 +1,7 @@
 import re
 from collections import namedtuple
 from typing import List
+
 import lark
 
 # a prompt like this: "fantasy landscape with a [mountain:lake:0.25] and [an oak:a christmas tree:0.75][ in foreground::0.6][ in background:0.25] [shoddy:masterful:0.5]"

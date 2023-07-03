@@ -1,9 +1,9 @@
-from functools import wraps
 import html
 import threading
 import time
+from functools import wraps
 
-from modules import shared, progress, errors
+from modules import errors, progress, shared
 
 queue_lock = threading.Lock()
 

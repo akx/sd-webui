@@ -1,11 +1,12 @@
 import os
 
-from modules.modelloader import load_file_from_url
-from modules.upscaler import Upscaler, UpscalerData
-from ldsr_model_arch import LDSR
-from modules import shared, script_callbacks, errors
 import sd_hijack_autoencoder  # noqa: F401
 import sd_hijack_ddpm_v1  # noqa: F401
+from ldsr_model_arch import LDSR
+
+from modules import errors, script_callbacks, shared
+from modules.modelloader import load_file_from_url
+from modules.upscaler import Upscaler, UpscalerData
 
 
 class UpscalerLDSR(Upscaler):

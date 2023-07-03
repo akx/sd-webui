@@ -1,5 +1,6 @@
 import importlib
 
+
 class CondFunc:
     def __new__(cls, orig_func, sub_func, cond_func):
         self = super(CondFunc, cls).__new__(cls)

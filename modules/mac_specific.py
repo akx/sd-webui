@@ -1,7 +1,9 @@
-import torch
 import platform
-from modules.sd_hijack_utils import CondFunc
+
+import torch
 from packaging import version
+
+from modules.sd_hijack_utils import CondFunc
 
 
 # has_mps is only available in nightly pytorch (for now) and macOS 12.3+.

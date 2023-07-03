@@ -1,23 +1,34 @@
 import collections
-import os.path
-import sys
 import gc
-import threading
-
-import torch
+import os.path
 import re
-import safetensors.torch
-from omegaconf import OmegaConf
+import sys
+import threading
 from os import mkdir
 from urllib import request
+
 import ldm.modules.midas as midas
-
+import safetensors.torch
+import tomesd
+import torch
 from ldm.util import instantiate_from_config
+from omegaconf import OmegaConf
 
-from modules import paths, shared, modelloader, devices, script_callbacks, sd_vae, sd_disable_initialization, errors, hashes, sd_models_config, sd_unet
+from modules import (
+    devices,
+    errors,
+    hashes,
+    modelloader,
+    paths,
+    script_callbacks,
+    sd_disable_initialization,
+    sd_models_config,
+    sd_unet,
+    sd_vae,
+    shared,
+)
 from modules.sd_hijack_inpainting import do_inpainting_hijack
 from modules.timer import Timer
-import tomesd
 
 model_dir = "Stable-diffusion"
 model_path = os.path.abspath(os.path.join(paths.models_path, model_dir))
@@ -87,7 +98,7 @@ class CheckpointInfo:
 
 try:
     # this silences the annoying "Some weights of the model checkpoint were not used when initializing..." message at start.
-    from transformers import logging, CLIPModel  # noqa: F401
+    from transformers import CLIPModel, logging  # noqa: F401
 
     logging.set_verbosity_error()
 except Exception:
@@ -522,7 +533,7 @@ def load_model(checkpoint_info=None, already_loaded_state_dict=None):
 
 
 def reload_model_weights(sd_model=None, info=None):
-    from modules import lowvram, devices, sd_hijack
+    from modules import devices, lowvram, sd_hijack
     checkpoint_info = info or select_checkpoint()
 
     if not sd_model:

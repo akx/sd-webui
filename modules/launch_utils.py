@@ -1,14 +1,14 @@
 # this scripts installs necessary requirements and launches main program in webui.py
-import subprocess
-import os
-import sys
 import importlib.util
-import platform
 import json
+import os
+import platform
+import subprocess
+import sys
 from functools import lru_cache
 
 from modules import cmd_args, errors
-from modules.paths_internal import script_path, extensions_dir
+from modules.paths_internal import extensions_dir, script_path
 
 args, _ = cmd_args.parser.parse_known_args()
 

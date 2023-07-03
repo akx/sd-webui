@@ -5,9 +5,10 @@ import os
 import re
 
 import gradio as gr
-from modules.paths import data_path
-from modules import shared, ui_tempdir, script_callbacks
 from PIL import Image
+
+from modules import script_callbacks, shared, ui_tempdir
+from modules.paths import data_path
 
 re_param_code = r'\s*([\w ]+):\s*("(?:\\"[^,]|\\"|\\|[^\"])+"|[^,]*)(?:,|$)'
 re_param = re.compile(re_param_code)

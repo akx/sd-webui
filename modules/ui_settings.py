@@ -1,6 +1,6 @@
 import gradio as gr
 
-from modules import ui_common, shared, script_callbacks, scripts, sd_models, sysinfo
+from modules import script_callbacks, scripts, sd_models, shared, sysinfo, ui_common
 from modules.call_queue import wrap_gradio_call
 from modules.shared import opts
 from modules.ui_components import FormRow

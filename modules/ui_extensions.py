@@ -1,19 +1,18 @@
+import errno
+import html
 import json
 import os.path
+import shutil
 import threading
 import time
 from datetime import datetime
 
 import git
-
 import gradio as gr
-import html
-import shutil
-import errno
 
-from modules import extensions, shared, paths, config_states, errors, restart
-from modules.paths_internal import config_states_dir
+from modules import config_states, errors, extensions, paths, restart, shared
 from modules.call_queue import wrap_gradio_gpu_call
+from modules.paths_internal import config_states_dir
 
 available_extensions = {"extensions": []}
 STYLE_PRIMARY = ' style="color: var(--primary-400)"'

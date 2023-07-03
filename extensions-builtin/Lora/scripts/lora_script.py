@@ -1,13 +1,14 @@
 import re
 
-import torch
+import extra_networks_lora
 import gradio as gr
+import lora
+import torch
+import ui_extra_networks_lora
 from fastapi import FastAPI
 
-import lora
-import extra_networks_lora
-import ui_extra_networks_lora
-from modules import script_callbacks, ui_extra_networks, extra_networks, shared
+from modules import extra_networks, script_callbacks, shared, ui_extra_networks
+
 
 def unload():
     torch.nn.Linear.forward = torch.nn.Linear_forward_before_lora

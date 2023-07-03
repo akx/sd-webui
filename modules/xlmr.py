@@ -1,9 +1,15 @@
-from transformers import BertPreTrainedModel, BertConfig
-import torch.nn as nn
-import torch
-from transformers.models.xlm_roberta.configuration_xlm_roberta import XLMRobertaConfig
-from transformers import XLMRobertaModel,XLMRobertaTokenizer
 from typing import Optional
+
+import torch
+import torch.nn as nn
+from transformers import (
+    BertConfig,
+    BertPreTrainedModel,
+    XLMRobertaModel,
+    XLMRobertaTokenizer,
+)
+from transformers.models.xlm_roberta.configuration_xlm_roberta import XLMRobertaConfig
+
 
 class BertSeriesConfig(BertConfig):
     def __init__(self, vocab_size=30522, hidden_size=768, num_hidden_layers=12, num_attention_heads=12, intermediate_size=3072, hidden_act="gelu", hidden_dropout_prob=0.1, attention_probs_dropout_prob=0.1, max_position_embeddings=512, type_vocab_size=2, initializer_range=0.02, layer_norm_eps=1e-12, pad_token_id=0, position_embedding_type="absolute", use_cache=True, classifier_dropout=None,project_dim=512, pooler_fn="average",learn_encoder=False,model_type='bert',**kwargs):

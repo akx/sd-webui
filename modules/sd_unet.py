@@ -1,7 +1,7 @@
-import torch.nn
 import ldm.modules.diffusionmodules.openaimodel
+import torch.nn
 
-from modules import script_callbacks, shared, devices
+from modules import devices, script_callbacks, shared
 
 unet_options = []
 current_unet_option = None

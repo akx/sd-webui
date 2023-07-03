@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import importlib
 import os
 import shutil
-import importlib
 from urllib.parse import urlparse
 
 from modules import shared
+from modules.paths import models_path, script_path
 from modules.upscaler import Upscaler, UpscalerLanczos, UpscalerNearest, UpscalerNone
-from modules.paths import script_path, models_path
 
 
 def load_file_from_url(

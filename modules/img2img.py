@@ -1,18 +1,29 @@
 import os
 from pathlib import Path
 
-import numpy as np
-from PIL import Image, ImageOps, ImageFilter, ImageEnhance, ImageChops, UnidentifiedImageError
 import gradio as gr
+import numpy as np
+from PIL import (
+    Image,
+    ImageChops,
+    ImageEnhance,
+    ImageFilter,
+    ImageOps,
+    UnidentifiedImageError,
+)
 
+import modules.processing as processing
+import modules.scripts
+import modules.shared as shared
 from modules import sd_samplers
 from modules.generation_parameters_copypaste import create_override_settings_dict
-from modules.processing import Processed, StableDiffusionProcessingImg2Img, process_images
+from modules.processing import (
+    Processed,
+    StableDiffusionProcessingImg2Img,
+    process_images,
+)
 from modules.shared import opts, state
-import modules.shared as shared
-import modules.processing as processing
 from modules.ui import plaintext_to_html
-import modules.scripts
 
 
 def process_batch(p, input_dir, output_dir, inpaint_mask_dir, args, to_scale=False, scale_by=1.0):

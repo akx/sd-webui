@@ -7,7 +7,6 @@ import filelock
 from modules import shared
 from modules.paths import data_path
 
-
 cache_filename = os.path.join(data_path, "cache.json")
 cache_data = None
 

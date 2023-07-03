@@ -2,6 +2,7 @@ import os
 
 import torch
 from torch import nn
+
 from modules import devices, paths
 
 sd_vae_approx_model = None

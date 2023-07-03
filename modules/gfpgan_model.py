@@ -4,7 +4,7 @@ import facexlib
 import gfpgan
 
 import modules.face_restoration
-from modules import paths, shared, devices, modelloader, errors
+from modules import devices, errors, modelloader, paths, shared
 
 model_dir = "GFPGAN"
 user_path = None
@@ -72,8 +72,8 @@ gfpgan_constructor = None
 def setup_model(dirname):
     try:
         os.makedirs(model_path, exist_ok=True)
-        from gfpgan import GFPGANer
         from facexlib import detection, parsing  # noqa: F401
+        from gfpgan import GFPGANer
         global user_path
         global have_gfpgan
         global gfpgan_constructor

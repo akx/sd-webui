@@ -1,16 +1,15 @@
+import json
 import os
 import re
 import shutil
-import json
 
-
+import gradio as gr
+import safetensors.torch
 import torch
 import tqdm
 
-from modules import shared, images, sd_models, sd_vae, sd_models_config
+from modules import images, sd_models, sd_models_config, sd_vae, shared
 from modules.ui_common import plaintext_to_html
-import gradio as gr
-import safetensors.torch
 
 
 def run_pnginfo(image):

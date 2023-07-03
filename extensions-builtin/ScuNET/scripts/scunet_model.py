@@ -1,14 +1,13 @@
 import sys
 
-import PIL.Image
 import numpy as np
+import PIL.Image
 import torch
+from scunet_model_arch import SCUNet
 from tqdm import tqdm
 
 import modules.upscaler
-from modules import devices, modelloader, script_callbacks, errors
-from scunet_model_arch import SCUNet
-
+from modules import devices, errors, modelloader, script_callbacks
 from modules.modelloader import load_file_from_url
 from modules.shared import opts
 
@@ -135,6 +134,7 @@ class UpscalerScuNET(modules.upscaler.Upscaler):
 
 def on_ui_settings():
     import gradio as gr
+
     from modules import shared
 
     shared.opts.add_option("SCUNET_tile", shared.OptionInfo(256, "Tile size for SCUNET upscalers.", gr.Slider, {"minimum": 0, "maximum": 512, "step": 16}, section=('upscaling', "Upscaling")).info("0 = no tiling"))

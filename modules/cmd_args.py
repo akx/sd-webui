@@ -1,7 +1,16 @@
 import argparse
 import json
 import os
-from modules.paths_internal import models_path, script_path, data_path, extensions_dir, extensions_builtin_dir, sd_default_config, sd_model_file  # noqa: F401
+
+from modules.paths_internal import (  # noqa: F401
+    data_path,
+    extensions_builtin_dir,
+    extensions_dir,
+    models_path,
+    script_path,
+    sd_default_config,
+    sd_model_file,
+)
 
 parser = argparse.ArgumentParser()
 

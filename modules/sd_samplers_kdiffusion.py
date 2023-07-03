@@ -1,14 +1,20 @@
-from collections import deque
-import torch
 import inspect
-import k_diffusion.sampling
-from modules import prompt_parser, devices, sd_samplers_common
+from collections import deque
 
-from modules.shared import opts, state
+import k_diffusion.sampling
+import torch
+
 import modules.shared as shared
-from modules.script_callbacks import CFGDenoiserParams, cfg_denoiser_callback
-from modules.script_callbacks import CFGDenoisedParams, cfg_denoised_callback
-from modules.script_callbacks import AfterCFGCallbackParams, cfg_after_cfg_callback
+from modules import devices, prompt_parser, sd_samplers_common
+from modules.script_callbacks import (
+    AfterCFGCallbackParams,
+    CFGDenoisedParams,
+    CFGDenoiserParams,
+    cfg_after_cfg_callback,
+    cfg_denoised_callback,
+    cfg_denoiser_callback,
+)
+from modules.shared import opts, state
 
 samplers_k_diffusion = [
     ('Euler a', 'sample_euler_ancestral', ['k_euler_a', 'k_euler_ancestral'], {"uses_ensd": True}),

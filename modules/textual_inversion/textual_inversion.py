@@ -1,24 +1,37 @@
+import csv
+import datetime
+import html
 import os
 from collections import namedtuple
 
+import numpy as np
+import safetensors.torch
 import torch
 import tqdm
-import html
-import datetime
-import csv
-import safetensors.torch
-
-import numpy as np
 from PIL import Image, PngImagePlugin
 from torch.utils.tensorboard import SummaryWriter
 
-from modules import shared, devices, sd_hijack, processing, sd_models, images, sd_samplers, sd_hijack_checkpoint, errors
 import modules.textual_inversion.dataset
+from modules import (
+    devices,
+    errors,
+    images,
+    processing,
+    sd_hijack,
+    sd_hijack_checkpoint,
+    sd_models,
+    sd_samplers,
+    shared,
+)
+from modules.textual_inversion.image_embedding import (
+    caption_image_overlay,
+    embedding_from_b64,
+    embedding_to_b64,
+    extract_image_data_embed,
+    insert_image_data_embed,
+)
 from modules.textual_inversion.learn_schedule import LearnRateScheduler
-
-from modules.textual_inversion.image_embedding import embedding_to_b64, embedding_from_b64, insert_image_data_embed, extract_image_data_embed, caption_image_overlay
 from modules.textual_inversion.logging import save_settings_to_file
-
 
 TextualInversionTemplate = namedtuple("TextualInversionTemplate", ["name", "path"])
 textual_inversion_templates = {}

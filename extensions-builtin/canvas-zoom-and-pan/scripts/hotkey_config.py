@@ -1,4 +1,5 @@
 import gradio as gr
+
 from modules import shared
 
 shared.options_templates.update(shared.options_section(('canvas_hotkey', "Canvas Hotkeys"), {

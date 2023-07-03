@@ -3,25 +3,16 @@ import json
 import mimetypes
 import os
 import sys
-from functools import reduce
 import warnings
+from functools import reduce
 
 import gradio as gr
 import gradio.utils
 import numpy as np
 from PIL import Image, PngImagePlugin  # noqa: F401
-from modules.call_queue import wrap_gradio_gpu_call, wrap_queued_call, wrap_gradio_call
-
-from modules import sd_hijack, sd_models, script_callbacks, ui_extensions, deepbooru, sd_vae, extra_networks, ui_common, ui_postprocessing, progress, ui_loadsave, errors, shared_items, ui_settings, timer, sysinfo
-from modules.ui_components import FormRow, FormGroup, ToolButton, FormHTML
-from modules.paths import script_path
-from modules.ui_common import create_refresh_button
-from modules.ui_gradio_extensions import reload_javascript
-
-
-from modules.shared import opts, cmd_opts
 
 import modules.codeformer_model
+import modules.extras
 import modules.generation_parameters_copypaste as parameters_copypaste
 import modules.gfpgan_model
 import modules.hypernetworks.ui
@@ -29,13 +20,35 @@ import modules.scripts
 import modules.shared as shared
 import modules.styles
 import modules.textual_inversion.ui
-from modules import prompt_parser
+from modules import (
+    deepbooru,
+    errors,
+    extra_networks,
+    progress,
+    prompt_parser,
+    script_callbacks,
+    sd_hijack,
+    sd_models,
+    sd_vae,
+    shared_items,
+    sysinfo,
+    timer,
+    ui_common,
+    ui_extensions,
+    ui_loadsave,
+    ui_postprocessing,
+    ui_settings,
+)
+from modules.call_queue import wrap_gradio_call, wrap_gradio_gpu_call, wrap_queued_call
+from modules.generation_parameters_copypaste import image_from_url_text
+from modules.paths import script_path
 from modules.sd_hijack import model_hijack
 from modules.sd_samplers import samplers, samplers_for_img2img
+from modules.shared import cmd_opts, opts
 from modules.textual_inversion import textual_inversion
-import modules.hypernetworks.ui
-from modules.generation_parameters_copypaste import image_from_url_text
-import modules.extras
+from modules.ui_common import create_refresh_button
+from modules.ui_components import FormGroup, FormHTML, FormRow, ToolButton
+from modules.ui_gradio_extensions import reload_javascript
 
 create_setting_component = ui_settings.create_setting_component
 
@@ -107,7 +120,7 @@ def add_style(name: str, prompt: str, negative_prompt: str):
 
 
 def calc_resolution_hires(enable, width, height, hr_scale, hr_resize_x, hr_resize_y):
-    from modules import processing, devices
+    from modules import devices, processing
 
     if not enable:
         return ""
@@ -1558,6 +1571,7 @@ def create_ui():
 
 def versions_html():
     import torch
+
     import launch
 
     python_version = ".".join([str(x) for x in sys.version_info[0:3]])
@@ -1586,8 +1600,9 @@ checkpoint: <a id="sd_checkpoint_hash">N/A</a>
 
 
 def setup_ui_api(app):
-    from pydantic import BaseModel, Field
     from typing import List
+
+    from pydantic import BaseModel, Field
 
     class QuicksettingsHint(BaseModel):
         name: str = Field(title="Name of the quicksettings field")

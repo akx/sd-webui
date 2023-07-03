@@ -1,9 +1,10 @@
-import os
-from PIL import Image, ImageOps
 import math
-import tqdm
+import os
 
-from modules import paths, shared, images, deepbooru
+import tqdm
+from PIL import Image, ImageOps
+
+from modules import deepbooru, images, paths, shared
 from modules.textual_inversion import autocrop
 
 

@@ -1,14 +1,13 @@
 # this code is adapted from the script contributed by anon from /h/
 
-import pickle
 import collections
-
-import torch
-import numpy
-import _codecs
-import zipfile
+import pickle
 import re
+import zipfile
 
+import _codecs
+import numpy
+import torch
 
 # PyTorch 1.13 and later have _TypedStorage renamed to TypedStorage
 from modules import errors

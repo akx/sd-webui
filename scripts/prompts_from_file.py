@@ -2,10 +2,10 @@ import copy
 import random
 import shlex
 
-import modules.scripts as scripts
 import gradio as gr
 
-from modules import sd_samplers, errors
+import modules.scripts as scripts
+from modules import errors, sd_samplers
 from modules.processing import Processed, process_images
 from modules.shared import state
 

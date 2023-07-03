@@ -1,11 +1,15 @@
 import inspect
-from pydantic import BaseModel, Field, create_model
-from typing import Any, Optional
-from typing_extensions import Literal
+from typing import Any, Dict, List, Optional
+
 from inflection import underscore
-from modules.processing import StableDiffusionProcessingTxt2Img, StableDiffusionProcessingImg2Img
-from modules.shared import sd_upscalers, opts, parser
-from typing import Dict, List
+from pydantic import BaseModel, Field, create_model
+from typing_extensions import Literal
+
+from modules.processing import (
+    StableDiffusionProcessingImg2Img,
+    StableDiffusionProcessingTxt2Img,
+)
+from modules.shared import opts, parser, sd_upscalers
 
 API_NOT_ALLOWED = [
     "self",

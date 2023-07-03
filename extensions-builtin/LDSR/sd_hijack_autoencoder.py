@@ -1,21 +1,20 @@
 # The content of this file comes from the ldm/models/autoencoder.py file of the compvis/stable-diffusion repo
 # The VQModel & VQModelInterface were subsequently removed from ldm/models/autoencoder.py when we moved to the stability-ai/stablediffusion repo
 # As the LDSR upscaler relies on VQModel & VQModelInterface, the hijack aims to put them back into the ldm.models.autoencoder
-import numpy as np
-import torch
-import pytorch_lightning as pl
-import torch.nn.functional as F
 from contextlib import contextmanager
 
-from torch.optim.lr_scheduler import LambdaLR
-
-from ldm.modules.ema import LitEma
-from vqvae_quantize import VectorQuantizer2 as VectorQuantizer
-from ldm.modules.diffusionmodules.model import Encoder, Decoder
-from ldm.util import instantiate_from_config
-
 import ldm.models.autoencoder
+import numpy as np
+import pytorch_lightning as pl
+import torch
+import torch.nn.functional as F
+from ldm.modules.diffusionmodules.model import Decoder, Encoder
+from ldm.modules.ema import LitEma
+from ldm.util import instantiate_from_config
 from packaging import version
+from torch.optim.lr_scheduler import LambdaLR
+from vqvae_quantize import VectorQuantizer2 as VectorQuantizer
+
 
 class VQModel(pl.LightningModule):
     def __init__(self,

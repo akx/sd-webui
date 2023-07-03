@@ -5,7 +5,7 @@ import torch
 from PIL import Image
 
 import modules.esrgan_model_arch as arch
-from modules import modelloader, images, devices
+from modules import devices, images, modelloader
 from modules.shared import opts
 from modules.upscaler import Upscaler, UpscalerData
 

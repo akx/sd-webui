@@ -1,13 +1,13 @@
+import hashlib
 import json
 import os
+import platform
+import re
 import sys
 import traceback
 
-import platform
-import hashlib
 import pkg_resources
 import psutil
-import re
 
 import launch
 from modules import paths_internal, timer

@@ -10,12 +10,13 @@
 #   Self-attention Does Not Need O(n2) Memory":
 #   https://arxiv.org/abs/2112.05682v2
 
+import math
 from functools import partial
+from typing import List, NamedTuple, Optional
+
 import torch
 from torch import Tensor
 from torch.utils.checkpoint import checkpoint
-import math
-from typing import Optional, NamedTuple, List
 
 
 def narrow_trunc(

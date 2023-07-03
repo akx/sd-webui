@@ -2,7 +2,15 @@ import os
 
 from PIL import Image
 
-from modules import shared, images, devices, scripts, scripts_postprocessing, ui_common, generation_parameters_copypaste
+from modules import (
+    devices,
+    generation_parameters_copypaste,
+    images,
+    scripts,
+    scripts_postprocessing,
+    shared,
+    ui_common,
+)
 from modules.shared import opts
 
 

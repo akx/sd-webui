@@ -2,8 +2,8 @@ import html
 
 import gradio as gr
 
-import modules.textual_inversion.textual_inversion
 import modules.textual_inversion.preprocess
+import modules.textual_inversion.textual_inversion
 from modules import sd_hijack, shared
 
 

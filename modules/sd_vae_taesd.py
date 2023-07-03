@@ -5,6 +5,7 @@ Tiny AutoEncoder for Stable Diffusion
 https://github.com/madebyollin/taesd
 """
 import os
+
 import torch
 import torch.nn as nn
 

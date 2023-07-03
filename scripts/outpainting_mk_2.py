@@ -1,12 +1,11 @@
 import math
 
+import gradio as gr
 import numpy as np
 import skimage
-
-import modules.scripts as scripts
-import gradio as gr
 from PIL import Image, ImageDraw
 
+import modules.scripts as scripts
 from modules import images
 from modules.processing import Processed, process_images
 from modules.shared import opts, state

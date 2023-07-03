@@ -1,9 +1,13 @@
 import os
 import threading
 
-from modules import shared, errors
+from modules import errors, shared
 from modules.gitpython_hack import Repo
-from modules.paths_internal import extensions_dir, extensions_builtin_dir, script_path  # noqa: F401
+from modules.paths_internal import (  # noqa: F401
+    extensions_builtin_dir,
+    extensions_dir,
+    script_path,
+)
 
 extensions = []
 

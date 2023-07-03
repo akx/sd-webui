@@ -1,8 +1,8 @@
 import os
 
 import pytest
-from PIL import Image
 from gradio.processing_utils import encode_pil_to_base64
+from PIL import Image
 
 test_files_path = os.path.dirname(__file__) + "/test_files"
 

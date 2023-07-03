@@ -1,10 +1,10 @@
 import os
 import re
 
-import torch
 import numpy as np
+import torch
 
-from modules import modelloader, paths, deepbooru_model, devices, images, shared
+from modules import deepbooru_model, devices, images, modelloader, paths, shared
 
 re_special = re.compile(r'([\\()])')
 

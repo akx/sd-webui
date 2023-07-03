@@ -1,7 +1,7 @@
 import inspect
 import os
 from collections import namedtuple
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from fastapi import FastAPI
 from gradio import Blocks

@@ -1,9 +1,9 @@
-import os
 import collections
-from modules import paths, shared, devices, script_callbacks, sd_models
 import glob
+import os
 from copy import deepcopy
 
+from modules import devices, paths, script_callbacks, sd_models, shared
 
 vae_path = os.path.abspath(os.path.join(paths.models_path, "VAE"))
 vae_ignore_keys = {"model_ema.decay", "model_ema.num_updates"}
@@ -178,7 +178,7 @@ unspecified = object()
 
 
 def reload_vae_weights(sd_model=None, vae_file=unspecified):
-    from modules import lowvram, devices, sd_hijack
+    from modules import devices, lowvram, sd_hijack
 
     if not sd_model:
         sd_model = shared.sd_model

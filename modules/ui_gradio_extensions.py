@@ -1,8 +1,9 @@
 import os
+
 import gradio as gr
 
-from modules import localization, shared, scripts
-from modules.paths import script_path, data_path
+from modules import localization, scripts, shared
+from modules.paths import data_path, script_path
 
 
 def webpath(fn):

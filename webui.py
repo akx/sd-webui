@@ -1,13 +1,14 @@
 from __future__ import annotations
 
+import importlib
+import json
+import logging
 import os
+import re
+import signal
 import sys
 import time
-import importlib
-import signal
-import re
 import warnings
-import json
 from threading import Thread
 from typing import Iterable
 
@@ -16,16 +17,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from packaging import version
 
-import logging
-
 logging.getLogger("xformers").addFilter(lambda record: 'A matching Triton is not available' not in record.getMessage())
 
-from modules import paths, timer, import_hook, errors, devices  # noqa: F401
+from modules import devices, errors, import_hook, paths, timer  # noqa: F401
 
 startup_timer = timer.startup_timer
 
+import pytorch_lightning  # noqa: F401 # pytorch_lightning should be imported after torch, but it re-enables warnings on import so import once to disable them
 import torch
-import pytorch_lightning   # noqa: F401 # pytorch_lightning should be imported after torch, but it re-enables warnings on import so import once to disable them
+
 warnings.filterwarnings(action="ignore", category=DeprecationWarning, module="pytorch_lightning")
 warnings.filterwarnings(action="ignore", category=UserWarning, module="torchvision")
 
@@ -33,41 +33,54 @@ warnings.filterwarnings(action="ignore", category=UserWarning, module="torchvisi
 startup_timer.record("import torch")
 
 import gradio
+
 startup_timer.record("import gradio")
 
 import ldm.modules.encoders.modules  # noqa: F401
+
 startup_timer.record("import ldm")
 
 from modules import extra_networks
-from modules.call_queue import wrap_gradio_gpu_call, wrap_queued_call, queue_lock  # noqa: F401
+from modules.call_queue import (  # noqa: F401
+    queue_lock,
+    wrap_gradio_gpu_call,
+    wrap_queued_call,
+)
 
 # Truncate version number of nightly/local build of PyTorch to not cause exceptions with CodeFormer or Safetensors
 if ".dev" in torch.__version__ or "+git" in torch.__version__:
     torch.__long_version__ = torch.__version__
     torch.__version__ = re.search(r'[\d.]+[\d]', torch.__version__).group(0)
 
-from modules import shared, sd_samplers, upscaler, extensions, localization, ui_tempdir, ui_extra_networks, config_states
 import modules.codeformer_model as codeformer
 import modules.face_restoration
 import modules.gfpgan_model as gfpgan
+import modules.hypernetworks.hypernetwork
 import modules.img2img
-
 import modules.lowvram
+import modules.progress
+import modules.script_callbacks
 import modules.scripts
 import modules.sd_hijack
 import modules.sd_hijack_optimizations
 import modules.sd_models
-import modules.sd_vae
 import modules.sd_unet
-import modules.txt2img
-import modules.script_callbacks
+import modules.sd_vae
 import modules.textual_inversion.textual_inversion
-import modules.progress
-
+import modules.txt2img
 import modules.ui
-from modules import modelloader
+from modules import (
+    config_states,
+    extensions,
+    localization,
+    modelloader,
+    sd_samplers,
+    shared,
+    ui_extra_networks,
+    ui_tempdir,
+    upscaler,
+)
 from modules.shared import cmd_opts
-import modules.hypernetworks.hypernetwork
 
 startup_timer.record("other imports")
 

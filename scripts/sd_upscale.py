@@ -1,10 +1,10 @@
 import math
 
-import modules.scripts as scripts
 import gradio as gr
 from PIL import Image
 
-from modules import processing, shared, images, devices
+import modules.scripts as scripts
+from modules import devices, images, processing, shared
 from modules.processing import Processed
 from modules.shared import opts, state
 

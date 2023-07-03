@@ -3,12 +3,12 @@ import sys
 import numpy as np
 import torch
 from PIL import Image
-from tqdm import tqdm
-
-from modules import modelloader, devices, script_callbacks, shared
-from modules.shared import opts, state
 from swinir_model_arch import SwinIR
 from swinir_model_arch_v2 import Swin2SR
+from tqdm import tqdm
+
+from modules import devices, modelloader, script_callbacks, shared
+from modules.shared import opts, state
 from modules.upscaler import Upscaler, UpscalerData
 
 SWINIR_MODEL_URL = "https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/003_realSR_BSRGAN_DFOWMFC_s64w8_SwinIR-L_x4_GAN.pth"

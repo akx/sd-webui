@@ -1,18 +1,17 @@
 from __future__ import annotations
+
 import math
-import psutil
-
-import torch
-from torch import einsum
-
-from ldm.util import default
-from einops import rearrange
-
-from modules import shared, errors, devices, sub_quadratic_attention
-from modules.hypernetworks import hypernetwork
 
 import ldm.modules.attention
 import ldm.modules.diffusionmodules.model
+import psutil
+import torch
+from einops import rearrange
+from ldm.util import default
+from torch import einsum
+
+from modules import devices, errors, shared, sub_quadratic_attention
+from modules.hypernetworks import hypernetwork
 
 diffusionmodules_model_AttnBlock_forward = ldm.modules.diffusionmodules.model.AttnBlock.forward
 

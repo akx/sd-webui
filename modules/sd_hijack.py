@@ -1,19 +1,30 @@
-import torch
-from torch.nn.functional import silu
 from types import MethodType
 
-import modules.textual_inversion.textual_inversion
-from modules import devices, sd_hijack_optimizations, shared, script_callbacks, errors, sd_unet
-from modules.hypernetworks import hypernetwork
-from modules.shared import cmd_opts
-from modules import sd_hijack_clip, sd_hijack_open_clip, sd_hijack_unet, sd_hijack_xlmr, xlmr
-
+import ldm.models.diffusion.ddim
+import ldm.models.diffusion.plms
 import ldm.modules.attention
 import ldm.modules.diffusionmodules.model
 import ldm.modules.diffusionmodules.openaimodel
-import ldm.models.diffusion.ddim
-import ldm.models.diffusion.plms
 import ldm.modules.encoders.modules
+import torch
+from torch.nn.functional import silu
+
+import modules.textual_inversion.textual_inversion
+from modules import (
+    devices,
+    errors,
+    script_callbacks,
+    sd_hijack_clip,
+    sd_hijack_open_clip,
+    sd_hijack_optimizations,
+    sd_hijack_unet,
+    sd_hijack_xlmr,
+    sd_unet,
+    shared,
+    xlmr,
+)
+from modules.hypernetworks import hypernetwork
+from modules.shared import cmd_opts
 
 attention_CrossAttention_forward = ldm.modules.attention.CrossAttention.forward
 diffusionmodules_model_nonlinearity = ldm.modules.diffusionmodules.model.nonlinearity

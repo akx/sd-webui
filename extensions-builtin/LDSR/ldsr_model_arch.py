@@ -1,18 +1,18 @@
-import os
 import gc
+import os
 import time
 
 import numpy as np
+import safetensors.torch
 import torch
 import torchvision
-from PIL import Image
 from einops import rearrange, repeat
-from omegaconf import OmegaConf
-import safetensors.torch
-
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.util import instantiate_from_config, ismap
-from modules import shared, sd_hijack
+from omegaconf import OmegaConf
+from PIL import Image
+
+from modules import sd_hijack, shared
 
 cached_ldsr_model: torch.nn.Module = None
 

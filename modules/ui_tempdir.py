@@ -4,11 +4,9 @@ from collections import namedtuple
 from pathlib import Path
 
 import gradio.components
-
 from PIL import PngImagePlugin
 
 from modules import shared
-
 
 Savedfile = namedtuple("Savedfile", ["name"])
 

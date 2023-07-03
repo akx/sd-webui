@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from einops import rearrange
 from einops.layers.torch import Rearrange
-from timm.models.layers import trunc_normal_, DropPath
+from timm.models.layers import DropPath, trunc_normal_
 
 
 class WMSA(nn.Module):

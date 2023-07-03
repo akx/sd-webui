@@ -1,8 +1,9 @@
-import modules.scripts as scripts
-import gradio as gr
 import ast
 import copy
 
+import gradio as gr
+
+import modules.scripts as scripts
 from modules.processing import Processed
 from modules.shared import cmd_opts
 

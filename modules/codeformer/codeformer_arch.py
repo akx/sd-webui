@@ -1,13 +1,15 @@
 # this file is copied from CodeFormer repository. Please see comment in modules/codeformer_model.py
 
 import math
-import torch
-from torch import nn, Tensor
-import torch.nn.functional as F
 from typing import Optional
 
-from modules.codeformer.vqgan_arch import VQAutoEncoder, ResBlock
+import torch
+import torch.nn.functional as F
 from basicsr.utils.registry import ARCH_REGISTRY
+from torch import Tensor, nn
+
+from modules.codeformer.vqgan_arch import ResBlock, VQAutoEncoder
+
 
 def calc_mean_std(feat, eps=1e-5):
     """Calculate mean and std for adaptive_instance_normalization.

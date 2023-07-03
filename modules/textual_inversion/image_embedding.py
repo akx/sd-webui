@@ -1,11 +1,11 @@
 import base64
 import json
 import warnings
+import zlib
 
 import numpy as np
-import zlib
-from PIL import Image, ImageDraw
 import torch
+from PIL import Image, ImageDraw
 
 
 class EmbeddingEncoder(json.JSONEncoder):

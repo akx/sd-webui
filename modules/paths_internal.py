@@ -2,8 +2,8 @@
 
 import argparse
 import os
-import sys
 import shlex
+import sys
 
 commandline_args = os.environ.get('COMMANDLINE_ARGS', "")
 sys.argv += shlex.split(commandline_args)

@@ -1,35 +1,45 @@
+import hashlib
 import json
 import logging
 import math
 import os
-import sys
-import hashlib
-
-import torch
-import numpy as np
-from PIL import Image, ImageOps
 import random
-import cv2
-from skimage import exposure
+import sys
 from typing import Any, Dict, List
 
-import modules.sd_hijack
-from modules import devices, prompt_parser, masking, sd_samplers, lowvram, generation_parameters_copypaste, extra_networks, sd_vae_approx, scripts, sd_samplers_common, sd_unet
-from modules.sd_hijack import model_hijack
-from modules.shared import opts, cmd_opts, state
-import modules.shared as shared
-import modules.paths as paths
-import modules.face_restoration
-import modules.images as images
-import modules.styles
-import modules.sd_models as sd_models
-import modules.sd_vae as sd_vae
+import cv2
+import numpy as np
+import torch
+from blendmodes.blend import BlendType, blendLayers
+from einops import rearrange, repeat
 from ldm.data.util import AddMiDaS
 from ldm.models.diffusion.ddpm import LatentDepth2ImageDiffusion
+from PIL import Image, ImageOps
+from skimage import exposure
 
-from einops import repeat, rearrange
-from blendmodes.blend import blendLayers, BlendType
-
+import modules.face_restoration
+import modules.images as images
+import modules.paths as paths
+import modules.sd_hijack
+import modules.sd_models as sd_models
+import modules.sd_vae as sd_vae
+import modules.shared as shared
+import modules.styles
+from modules import (
+    devices,
+    extra_networks,
+    generation_parameters_copypaste,
+    lowvram,
+    masking,
+    prompt_parser,
+    scripts,
+    sd_samplers,
+    sd_samplers_common,
+    sd_unet,
+    sd_vae_approx,
+)
+from modules.sd_hijack import model_hijack
+from modules.shared import cmd_opts, opts, state
 
 # some of those options should not be changed at all because they would break the model, so I removed them from options.
 opt_C = 4

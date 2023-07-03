@@ -1,19 +1,19 @@
 import os
+import random
+import re
+from collections import defaultdict
+from random import choices, shuffle
+
 import numpy as np
 import PIL
 import torch
-from PIL import Image
-from torch.utils.data import Dataset, DataLoader, Sampler
-from torchvision import transforms
-from collections import defaultdict
-from random import shuffle, choices
-
-import random
 import tqdm
-from modules import devices, shared
-import re
-
 from ldm.modules.distributions.distributions import DiagonalGaussianDistribution
+from PIL import Image
+from torch.utils.data import DataLoader, Dataset, Sampler
+from torchvision import transforms
+
+from modules import devices, shared
 
 re_numbers_at_start = re.compile(r"^[-\d]+\s*")
 

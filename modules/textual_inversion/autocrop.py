@@ -1,7 +1,8 @@
-import cv2
-import requests
 import os
+
+import cv2
 import numpy as np
+import requests
 from PIL import ImageDraw
 
 GREEN = "#0F0"

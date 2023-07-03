@@ -1,7 +1,7 @@
 import open_clip.tokenizer
 import torch
 
-from modules import sd_hijack_clip, devices
+from modules import devices, sd_hijack_clip
 from modules.shared import opts
 
 tokenizer = open_clip.tokenizer._tokenizer

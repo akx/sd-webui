@@ -1,23 +1,38 @@
 import datetime
 import glob
 import html
-import os
 import inspect
+import os
+from collections import deque
+from statistics import mean, stdev
 
-import modules.textual_inversion.dataset
 import torch
 import tqdm
 from einops import rearrange, repeat
 from ldm.util import default
-from modules import devices, processing, sd_models, shared, sd_samplers, hashes, sd_hijack_checkpoint, errors
-from modules.textual_inversion import textual_inversion, logging
-from modules.textual_inversion.learn_schedule import LearnRateScheduler
 from torch import einsum
-from torch.nn.init import normal_, xavier_normal_, xavier_uniform_, kaiming_normal_, kaiming_uniform_, zeros_
+from torch.nn.init import (
+    kaiming_normal_,
+    kaiming_uniform_,
+    normal_,
+    xavier_normal_,
+    xavier_uniform_,
+    zeros_,
+)
 
-from collections import deque
-from statistics import stdev, mean
-
+import modules.textual_inversion.dataset
+from modules import (
+    devices,
+    errors,
+    hashes,
+    processing,
+    sd_hijack_checkpoint,
+    sd_models,
+    sd_samplers,
+    shared,
+)
+from modules.textual_inversion import logging, textual_inversion
+from modules.textual_inversion.learn_schedule import LearnRateScheduler
 
 optimizer_dict = {optim_name : cls_obj for optim_name, cls_obj in inspect.getmembers(torch.optim, inspect.isclass) if optim_name != "Optimizer"}
 
