@@ -177,3 +177,14 @@ def load_upscalers():
         # Special case for UpscalerNone keeps it at the beginning of the list.
         key=lambda x: x.name.lower() if not isinstance(x.scaler, (UpscalerNone, UpscalerLanczos, UpscalerNearest)) else ""
     )
+
+
+def load_spandrel_model(path, *, device, half: bool = False, dtype=None):
+    import spandrel
+    model = spandrel.ModelLoader(device=device).load_from_file(path)
+    if half:
+        model = model.model.half()
+    if dtype:
+        model = model.model.to(dtype=dtype)
+    model.eval()
+    return model
