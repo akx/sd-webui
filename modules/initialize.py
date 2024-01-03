@@ -114,8 +114,8 @@ def initialize_rest(*, reload_script_modules=False):
             importlib.reload(module)
         startup_timer.record("reload script modules")
 
-    from modules import modelloader
-    modelloader.load_upscalers()
+    from modules import upscaler
+    upscaler.load_upscalers()
     startup_timer.record("load upscalers")
 
     from modules import sd_vae
