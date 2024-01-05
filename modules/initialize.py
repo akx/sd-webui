@@ -92,9 +92,10 @@ def initialize_rest(*, reload_script_modules=False):
     initialize_util.restore_config_state_file()
     startup_timer.record("restore config state file")
 
-    from modules import shared, upscaler, scripts
+    from modules import shared, scripts
     if cmd_opts.ui_debug_mode:
-        shared.sd_upscalers = upscaler.UpscalerLanczos().scalers
+        from modules.upscaling.pillow import PillowUpscaler
+        shared.sd_upscalers = [ud for ud in PillowUpscaler().discover() if ud.name == "Lanczos"]
         scripts.load_scripts()
         return
 

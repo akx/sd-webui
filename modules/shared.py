@@ -1,11 +1,15 @@
+from __future__ import annotations
 import os
 import sys
+from typing import TYPE_CHECKING
 
 import gradio as gr
 
-from modules import shared_cmd_options, shared_gradio_themes, options, shared_items, sd_models_types
+from modules import shared_cmd_options, shared_gradio_themes, options, shared_items, sd_models_types, util
 from modules.paths_internal import models_path, script_path, data_path, sd_configs_path, sd_default_config, sd_model_file, default_sd_model_file, extensions_dir, extensions_builtin_dir  # noqa: F401
-from modules import util
+
+if TYPE_CHECKING:
+    from modules.upscaler import UpscalerData
 
 cmd_opts = shared_cmd_options.cmd_opts
 parser = shared_cmd_options.parser
@@ -57,7 +61,7 @@ latent_upscale_modes = {
     "Latent (nearest-exact)": {"mode": "nearest-exact", "antialias": False},
 }
 
-sd_upscalers = []
+sd_upscalers: list[UpscalerData] = []
 
 clip_model = None
 

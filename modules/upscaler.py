@@ -1,191 +1,107 @@
 from __future__ import annotations
 
-import importlib
-import os
-from abc import abstractmethod
+import logging
+from abc import ABC, abstractmethod
+from typing import Iterable, Protocol
 
 import PIL
 from PIL import Image
 
-import modules.shared
-from modules import modelloader, shared
-
-LANCZOS = (Image.Resampling.LANCZOS if hasattr(Image, 'Resampling') else Image.LANCZOS)
-NEAREST = (Image.Resampling.NEAREST if hasattr(Image, 'Resampling') else Image.NEAREST)
+logger = logging.getLogger(__name__)
 
 
-class Upscaler:
-    name = None
-    model_path = None
-    model_name = None
-    model_url = None
-    enable = True
-    filter = None
-    model = None
-    user_path = None
-    scalers: []
-    tile = True
+class UpscalerData(Protocol):
+    """
+    Protocol for upscaler data objects.
 
-    def __init__(self, create_dirs=False):
-        self.mod_pad_h = None
-        self.tile_size = modules.shared.opts.ESRGAN_tile
-        self.tile_pad = modules.shared.opts.ESRGAN_tile_overlap
-        self.device = modules.shared.device
-        self.img = None
-        self.output = None
-        self.scale = 1
-        self.half = not modules.shared.cmd_opts.no_half
-        self.pre_pad = 0
-        self.mod_scale = None
-        self.model_download_path = None
+    These bind upscaler implementations to specific models and/or additional data required.
+    """
 
-        if self.model_path is None and self.name:
-            self.model_path = os.path.join(shared.models_path, self.name)
-        if self.model_path and create_dirs:
-            os.makedirs(self.model_path, exist_ok=True)
+    # The upscaler implementation class.
+    upscaler: Upscaler
 
-        try:
-            import cv2  # noqa: F401
-            self.can_tile = True
-        except Exception:
-            pass
+    # Human-readable name for this upscaler. Probably the name of the model.
+    name: str
+
+    # The priority is used to sort upscalers in the UI.
+    # The default priority is 0, and lower numbers are higher priority.
+    priority: int = 0
+
+
+class Upscaler(ABC):
+    name: str | None = None  # Should be set by concrete subclasses
 
     @abstractmethod
-    def do_upscale(self, img: PIL.Image, selected_model: str):
-        return img
+    def discover(self) -> Iterable[UpscalerData]:
+        """
+        Discover upscaler data for this upscaler, by e.g. looking for models in the file system.
 
-    def upscale(self, img: PIL.Image, scale, selected_model: str = None):
-        self.scale = scale
-        dest_w = int((img.width * scale) // 8 * 8)
-        dest_h = int((img.height * scale) // 8 * 8)
-
-        for _ in range(3):
-            if img.width >= dest_w and img.height >= dest_h:
-                break
-
-            shape = (img.width, img.height)
-
-            img = self.do_upscale(img, selected_model)
-
-            if shape == (img.width, img.height):
-                break
-
-        if img.width != dest_w or img.height != dest_h:
-            img = img.resize((int(dest_w), int(dest_h)), resample=LANCZOS)
-
-        return img
+        The upscaler implementation may trust that it is the single instance of its class for
+        the lifetime of a given `UpscalerData` object.
+        """
+        return []
 
     @abstractmethod
-    def load_model(self, path: str):
-        pass
-
-    def find_models(self, ext_filter=None) -> list:
-        return modelloader.load_models(model_path=self.model_path, model_url=self.model_url, command_path=self.user_path, ext_filter=ext_filter)
-
-    def update_status(self, prompt):
-        print(f"\nextras: {prompt}", file=shared.progress_print_out)
-
-
-class UpscalerData:
-    name = None
-    data_path = None
-    scale: int = 4
-    scaler: Upscaler = None
-    model: None
-
-    def __init__(self, name: str, path: str, upscaler: Upscaler = None, scale: int = 4, model=None):
-        self.name = name
-        self.data_path = path
-        self.local_data_path = path
-        self.scaler = upscaler
-        self.scale = scale
-        self.model = model
-
-    def __repr__(self):
-        return f"<UpscalerData name={self.name} path={self.data_path} scale={self.scale}>"
-
-
-class UpscalerNone(Upscaler):
-    name = "None"
-    scalers = []
-
-    def load_model(self, path):
-        pass
-
-    def do_upscale(self, img, selected_model=None):
+    def do_upscale(self, img: PIL.Image, size: tuple[int, int], data: UpscalerData):
         return img
 
-    def __init__(self, dirname=None):
-        super().__init__(False)
-        self.scalers = [UpscalerData("None", None, self)]
 
+def upscale(img: PIL.Image, *, scale: float, data: UpscalerData) -> PIL.Image:
+    """
+    Upscale `img` by `scale` using the upscaler configured by `data`.
+    """
+    if scale <= 1:  # Nothing to do.
+        return img
+    dest_w = int((img.width * scale) // 8 * 8)
+    dest_h = int((img.height * scale) // 8 * 8)
 
-class UpscalerLanczos(Upscaler):
-    scalers = []
+    for _ in range(3):
+        if img.width >= dest_w and img.height >= dest_h:
+            break
 
-    def do_upscale(self, img, selected_model=None):
-        return img.resize((int(img.width * self.scale), int(img.height * self.scale)), resample=LANCZOS)
+        shape = (img.width, img.height)
 
-    def load_model(self, _):
-        pass
+        img = data.upscaler.do_upscale(img, (dest_w, dest_h), data)
 
-    def __init__(self, dirname=None):
-        super().__init__(False)
-        self.name = "Lanczos"
-        self.scalers = [UpscalerData("Lanczos", None, self)]
+        if shape == (img.width, img.height):
+            break
 
+    if img.width != dest_w or img.height != dest_h:
+        logger.warning("Requested size %dx%d, got %dx%d; resizing.", dest_w, dest_h, img.width, img.height)
+        img = img.resize((int(dest_w), int(dest_h)), resample=Image.Resampling.LANCZOS)
 
-class UpscalerNearest(Upscaler):
-    scalers = []
-
-    def do_upscale(self, img, selected_model=None):
-        return img.resize((int(img.width * self.scale), int(img.height * self.scale)), resample=NEAREST)
-
-    def load_model(self, _):
-        pass
-
-    def __init__(self, dirname=None):
-        super().__init__(False)
-        self.name = "Nearest"
-        self.scalers = [UpscalerData("Nearest", None, self)]
+    return img
 
 
 def load_upscalers():
-    # We can only do this 'magic' method to dynamically load upscalers if they are referenced,
-    # so we'll try to import any _model.py files before looking in __subclasses__
-    modules_dir = os.path.join(shared.script_path, "modules")
-    for file in os.listdir(modules_dir):
-        if "_model.py" in file:
-            model_name = file.replace("_model.py", "")
-            full_model = f"modules.{model_name}_model"
-            try:
-                importlib.import_module(full_model)
-            except Exception:
-                pass
+    # The modules need to be imported so the classes are registered as `__subclasses__` of Upscaler.
+    # Built-in extensions will presumably already have been imported.
+    from modules.upscaling import pillow, spandrel  # noqa: F401
 
-    datas = []
-    commandline_options = vars(shared.cmd_opts)
+    upscaler_datas = []
+    for cls in Upscaler.__subclasses__():
+        if not cls.name:
+            # Assume this is e.g. an abstract mix-in class.
+            continue
+        upscaler_datas.extend(cls().discover())
+    upscaler_datas.sort(key=lambda d: (d.priority, d.name.lower()))
 
-    # some of upscaler classes will not go away after reloading their modules, and we'll end
-    # up with two copies of those classes. The newest copy will always be the last in the list,
-    # so we go from end to beginning and ignore duplicates
-    used_classes = {}
-    for cls in reversed(Upscaler.__subclasses__()):
-        classname = str(cls)
-        if classname not in used_classes:
-            used_classes[classname] = cls
+    from modules import shared
+    shared.sd_upscalers = upscaler_datas
 
-    for cls in reversed(used_classes.values()):
-        name = cls.__name__
-        cmd_name = f"{name.lower().replace('upscaler', '')}_models_path"
-        commandline_model_path = commandline_options.get(cmd_name, None)
-        scaler = cls(commandline_model_path)
-        scaler.user_path = commandline_model_path
-        scaler.model_download_path = commandline_model_path or scaler.model_path
-        datas += scaler.scalers
 
-    shared.sd_upscalers = sorted(
-        datas,
-        # Special case for UpscalerNone keeps it at the beginning of the list.
-        key=lambda x: x.name.lower() if not isinstance(x.scaler, (UpscalerNone, UpscalerLanczos, UpscalerNearest)) else ""
-    )
+def find_upscaler(name_or_index: int | str) -> UpscalerData:
+    """
+    Find an upscaler by name or index.
+
+    If `name_or_index` is an integer, it is interpreted as an index into the list of upscalers.
+    Otherwise, it is interpreted as a case-insensitive name.
+    """
+    from modules import shared
+    if isinstance(name_or_index, int):
+        return shared.sd_upscalers[name_or_index]
+    name_or_index = str(name_or_index).lower()
+    for d in shared.sd_upscalers:
+        if d.name.lower() == name_or_index:
+            return d
+    raise KeyError(f"Upscaler {name_or_index!r} not found.")

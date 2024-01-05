@@ -86,15 +86,6 @@ def load_models(model_path: str, model_url: str = None, command_path: str = None
     return output
 
 
-def friendly_name(file: str):
-    if file.startswith("http"):
-        file = urlparse(file).path
-
-    file = os.path.basename(file)
-    model_name, extension = os.path.splitext(file)
-    return model_name
-
-
 def load_spandrel_model(
     path: str | os.PathLike,
     *,

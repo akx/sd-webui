@@ -4,8 +4,11 @@ from modules.shared_cmd_options import cmd_opts
 
 
 def realesrgan_models_names():
-    import modules.realesrgan_model
-    return [x.name for x in modules.realesrgan_model.get_realesrgan_models(None)]
+    """
+    Get the names of the default "well-known" RealESRGAN models.
+    """
+    from modules.upscaling.spandrel import DEFAULT_REALESRGAN_MODEL_URLS
+    return sorted(DEFAULT_REALESRGAN_MODEL_URLS)
 
 
 def dat_models_names():

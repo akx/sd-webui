@@ -8,7 +8,7 @@ import sd_hijack_autoencoder  # noqa: F401
 import sd_hijack_ddpm_v1  # noqa: F401
 
 
-class UpscalerLDSR(Upscaler):
+class UpscalerLDSR(Upscaler):  # TODO(akx): unbreak
     def __init__(self, user_path):
         self.name = "LDSR"
         self.user_path = user_path

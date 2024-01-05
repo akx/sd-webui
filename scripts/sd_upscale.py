@@ -7,6 +7,7 @@ from PIL import Image
 from modules import processing, shared, images, devices
 from modules.processing import Processed
 from modules.shared import opts, state
+from modules.upscaler import find_upscaler, upscale
 
 
 class Script(scripts.Script):
@@ -25,10 +26,8 @@ class Script(scripts.Script):
         return [info, overlap, upscaler_index, scale_factor]
 
     def run(self, p, _, overlap, upscaler_index, scale_factor):
-        if isinstance(upscaler_index, str):
-            upscaler_index = [x.name.lower() for x in shared.sd_upscalers].index(upscaler_index.lower())
+        upscaler = find_upscaler(upscaler_index)
         processing.fix_seed(p)
-        upscaler = shared.sd_upscalers[upscaler_index]
 
         p.extra_generation_params["SD upscale overlap"] = overlap
         p.extra_generation_params["SD upscale upscaler"] = upscaler.name
@@ -39,10 +38,7 @@ class Script(scripts.Script):
         init_img = p.init_images[0]
         init_img = images.flatten(init_img, opts.img2img_background_color)
 
-        if upscaler.name != "None":
-            img = upscaler.scaler.upscale(init_img, scale_factor, upscaler.data_path)
-        else:
-            img = init_img
+        img = upscale(init_img, scale=scale_factor, upscaler=upscaler)
 
         devices.torch_gc()
 

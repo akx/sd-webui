@@ -6,6 +6,7 @@ import gradio as gr
 
 from modules.ui_components import FormRow, ToolButton
 from modules.ui import switch_values_symbol
+from modules.upscaler import upscale
 
 upscale_cache = {}
 
@@ -67,7 +68,7 @@ class ScriptPostprocessingUpscale(scripts_postprocessing.ScriptPostprocessing):
         if cached_image is not None:
             image = cached_image
         else:
-            image = upscaler.scaler.upscale(image, upscale_by, upscaler.data_path)
+            image = upscale(image, upscaler=upscaler, scale=upscale_by)
 
         upscale_cache[cache_key] = image
         if len(upscale_cache) > shared.opts.upscaling_max_images_in_cache:
